@@ -43,7 +43,7 @@ const Index = () => {
                 <Text className="hero-text">
                   Ship <span id="hero-span1"> 2.5kg </span>in just <br /> <span id="hero-span2">&#x20b9;999/- </span> <br />from India to USA
                 </Text>
-                <CustomButton type="primary" size="middle" text="Calculate Rate" onClick={()=>{}} />
+                <Suspense fallback=""><CustomButton type="primary" size="middle" text="Calculate Rate" onClick={()=>{}} /></Suspense>
               </Flex>
           </Flex>
         </Col>
@@ -56,7 +56,7 @@ const Index = () => {
             supplyChainData.map((item, index: number) => {
               return(
                 <Col key={index} xs={12} lg={8} className="supply-chain-data-card">
-                  <SupplyChainCards icon={item.icon} text={item.text} index={index} />
+                  <Suspense fallback=""><SupplyChainCards icon={item.icon} text={item.text} index={index} /></Suspense>
                 </Col>
               )
             })
@@ -79,7 +79,7 @@ const Index = () => {
                     name="weight"
                     rules={[{ required: true, message: 'Please enter total weight !' }]}
                   >
-                    <CustomInputs placeholder="Total Weight" type="number" size="large" addonAfter={weightUnits} onChange={(e: string) => {console.log(e)}} />
+                    <Suspense fallback=""><CustomInputs placeholder="Total Weight" type="number" size="large" addonAfter={weightUnits} onChange={(e: string) => {console.log(e)}} /></Suspense>
                   </Form.Item>
 
                   {/* Length Field */}
@@ -87,7 +87,7 @@ const Index = () => {
                     name="length"
                     rules={[{ required: true, message: 'Please enter length !' }]}
                   >
-                    <CustomInputs placeholder="Length" type="number" size="large" addonAfter={dimensions} onChange={(e: string) => {console.log(e)}} />
+                    <Suspense fallback=""><CustomInputs placeholder="Length" type="number" size="large" addonAfter={dimensions} onChange={(e: string) => {console.log(e)}} /></Suspense>
                   </Form.Item>
 
                   {/* Breadth Filed */}
@@ -95,7 +95,7 @@ const Index = () => {
                     name="breadth"
                     rules={[{ required: true, message: 'Please enter breadth !' }]}
                   >
-                    <CustomInputs placeholder="Breadth" type="number" size="large" addonAfter={dimensions} onChange={(e: string) => {console.log(e)}} />
+                    <Suspense fallback=""><CustomInputs placeholder="Breadth" type="number" size="large" addonAfter={dimensions} onChange={(e: string) => {console.log(e)}} /></Suspense>
                   </Form.Item>
 
                   {/* Height Field */}
@@ -103,12 +103,12 @@ const Index = () => {
                     name="height"
                     rules={[{ required: true, message: 'Please enter height !' }]}
                   >
-                    <CustomInputs placeholder="Height" type="number" size="large" addonAfter={dimensions} onChange={(e: string) => {console.log(e)}} />
+                    <Suspense fallback=""><CustomInputs placeholder="Height" type="number" size="large" addonAfter={dimensions} onChange={(e: string) => {console.log(e)}} /></Suspense>
                   </Form.Item>
 
                   {/* Submit Button */}
                   <Form.Item>
-                    <CustomButton type="primary" htmlType="submit" size="middle" text="Calculate" onClick={() => {}} />
+                    <Suspense fallback=""><CustomButton type="primary" htmlType="submit" size="middle" text="Calculate" onClick={() => {}} /></Suspense>
                 </Form.Item>
 
                 </Form>
@@ -140,7 +140,7 @@ const Index = () => {
                     name="name"
                     rules={[{ required: true, message: 'Please enter name !' }]}
                   >
-                    <CustomInputs placeholder="Full Name" type="text" size="large" onChange={(e: string) => {console.log(e)}} />
+                    <Suspense fallback=""><CustomInputs placeholder="Full Name" type="text" size="large" onChange={(e: string) => {console.log(e)}} /></Suspense>
                   </Form.Item>
 
                   {/* Email Field */}
@@ -148,7 +148,7 @@ const Index = () => {
                     name="email"
                     rules={[{ required: true, message: 'Please enter email !' }]}
                   >
-                    <CustomInputs placeholder="Email-Id" type="email" size="large" onChange={(e: string) => {console.log(e)}} />
+                    <Suspense fallback=""><CustomInputs placeholder="Email-Id" type="email" size="large" onChange={(e: string) => {console.log(e)}} /></Suspense>
                   </Form.Item>
 
                   {/* Shipements Filed */}
@@ -156,7 +156,7 @@ const Index = () => {
                     name="shipments"
                     rules={[{ required: true, message: 'Please enter shipments per month !' }]}
                   >
-                    <CustomInputs placeholder="Shipments per month" type="number" size="large" onChange={(e: string) => {console.log(e)}} />
+                    <Suspense fallback=""><CustomInputs placeholder="Shipments per month" type="number" size="large" onChange={(e: string) => {console.log(e)}} /></Suspense>
                   </Form.Item>
 
                   {/* Height Field */}
@@ -164,7 +164,7 @@ const Index = () => {
                     name="destination"
                     rules={[{ required: true, message: 'Please enter destination country !' }]}
                   >
-                    <CustomInputs placeholder="Destination Country" type="text" size="large" onChange={(e: string) => {console.log(e)}} />
+                    <Suspense fallback=""><CustomInputs placeholder="Destination Country" type="text" size="large" onChange={(e: string) => {console.log(e)}} /></Suspense>
                   </Form.Item>
 
                   {/* Weight Field */}
@@ -172,12 +172,12 @@ const Index = () => {
                     name="weight"
                     rules={[{ required: true, message: 'Please enter approx weight !' }]}
                   >
-                    <CustomInputs placeholder="Approx Weight" type="number" size="large" addonAfter={heavyCargoUnit} onChange={(e: string) => {console.log(e)}} />
+                    <Suspense fallback=""><CustomInputs placeholder="Approx Weight" type="number" size="large" addonAfter={heavyCargoUnit} onChange={(e: string) => {console.log(e)}} /></Suspense>
                   </Form.Item>
 
                   {/* Submit Button */}
                   <Form.Item>
-                    <CustomButton type="primary" htmlType="submit" size="middle" text="Submit" onClick={() => {}} />
+                    <Suspense fallback=""><CustomButton type="primary" htmlType="submit" size="middle" text="Submit" onClick={() => {}} /></Suspense>
                 </Form.Item>
 
                 </Form>

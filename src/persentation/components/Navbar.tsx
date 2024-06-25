@@ -1,4 +1,4 @@
-import React, { SyntheticEvent } from 'react'
+import React, { Suspense, SyntheticEvent } from 'react'
 import { Col, Flex, Image, Row } from 'antd'
 import logo from "../../assets/GI_LOGO_BLACK.png"
 import { useNavigate } from 'react-router-dom';
@@ -24,8 +24,8 @@ const Navbar = () => {
 
         <Col span={6}>
             <Flex justify="space-evenly">
-                <CustomButton type="primary" size="middle" text="Login" onClick={(e: SyntheticEvent) => handleClick(e)}/>
-                <CustomButton type="default" size="middle" text="Let's Talk" onClick={(e: SyntheticEvent) => handleClick(e)}/>
+                <Suspense fallback=""><CustomButton type="primary" size="middle" text="Login" onClick={(e: SyntheticEvent) => handleClick(e)}/></Suspense>
+                <Suspense fallback=""><CustomButton type="default" size="middle" text="Let's Talk" onClick={(e: SyntheticEvent) => handleClick(e)}/></Suspense>
             </Flex>
         </Col>
     </Row>

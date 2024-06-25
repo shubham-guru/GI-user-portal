@@ -11,7 +11,7 @@ const AppRoutes= () => {
   return (
     <Routes>
       <Route path={routes.INDEX} element={<Suspense fallback=""><MainLayoutPage children={<Index />} /></Suspense>} />
-      <Route path={routes.NOPAGE} element={<NoPage />} />
+      <Route path={routes.NOPAGE} element={<Suspense fallback=""><NoPage /></Suspense>} />
     </Routes>
   )
 }
