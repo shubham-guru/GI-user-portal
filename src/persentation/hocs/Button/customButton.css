@@ -1,0 +1,17 @@
+.custom-button{
+    padding: 1.2cqmax 3cqmax;
+    border-radius: .2cqmax;
+    letter-spacing: .1cqmax;
+    font-weight: 300;
+}
+
+#primary-btn{
+    background-color: #000000;
+}
+#primary-btn:hover{
+    background-color: #222222 !important;
+}
+#secondary-btn:hover{
+    border: solid 1px #000000 !important;
+    color: #000000;
+}

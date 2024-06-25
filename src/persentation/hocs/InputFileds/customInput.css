@@ -1,0 +1,25 @@
+.ant-input{
+    border-radius: .1cqmax !important;
+    border: none !important;
+    background-color: #F5F5F5 !important;
+    font-weight: 300 !important;
+}
+.ant-input:focus{
+    border: solid .1px #686868 !important;
+}
+.ant-input:hover{
+    border: none !important;
+}
+.ant-input-group-addon{
+    border-radius: .1cqmax !important;
+    background-color: #000000 !important;
+    padding: 0 15px !important;
+    border: none !important;
+}
+.ant-select-selection-item{
+    color: #ffffff !important;
+    text-align: center !important;
+}
+.ant-select-arrow{
+    color: #ffffff !important;
+}

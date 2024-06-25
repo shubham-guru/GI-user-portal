@@ -1,0 +1,58 @@
+.hero-text{
+    font-size: 4.5cqmax;
+    color: #444;
+    font-weight: 200;
+    padding: 4cqmax;
+}
+.index-col{
+    text-align: center;
+    margin-top: 2cqmax;
+    margin-left: 2cqmax;
+}
+#hero-span1{
+    text-decoration: underline;
+    text-decoration-color: rgb(253, 253, 16);
+}
+#hero-span2{
+    font-size: 7cqmax;
+    font-weight: 300;
+}
+.supply-chain-data-card{
+    display: flex;
+    justify-content: center;
+    text-align: center;
+}
+.supply-chain-col{
+    text-align: center;
+    margin: 3cqmax 0;
+}
+.supply-title-text{
+    font-size: 1.2cqmax;
+    font-weight: 300;
+    font-style: italic !important;
+    letter-spacing: .4cqmax;
+}
+.form-col{
+    border: solid 1px #bbbbbb;
+    padding: 4cqmax;
+    border-radius: .2cqmax;
+    margin: 2cqmax auto;
+}
+.calculate-rate-text{
+    font-size: 2cqmax;
+    font-weight: 300;
+    color: #444;
+}
+#rate-fare-span{
+    font-size: 8cqmax;
+    color: #000000;
+}
+.footer-divider{
+    margin-bottom: -1.2cqmax !important;
+}
+#copyright-text{
+    font-size: 1.2cqmax;
+    text-align: center;
+    width: 100%;
+    margin: 1cqmax;
+}

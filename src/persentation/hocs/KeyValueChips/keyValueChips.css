@@ -1,0 +1,9 @@
+.key-value-chip-flex{
+    margin-top: 1cqmax;
+}
+.key-value-chip-text{
+    font-size: 1.1cqmax;
+}
+#value-text{
+    cursor: pointer;
+}
