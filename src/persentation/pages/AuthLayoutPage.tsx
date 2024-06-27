@@ -1,7 +1,17 @@
+import React, { ReactNode } from 'react'
+import { Row, Col } from "antd"
 
-const AuthLayoutPage = () => {
+type IAuthLayoutPage = {
+  children: ReactNode
+}
+
+const AuthLayoutPage: React.FC<IAuthLayoutPage> = ({ children }) => {
   return (
-    <div>AuthLayoutPage</div>
+      <Row>
+          <Col span={24}>
+              {children}
+          </Col>
+      </Row>
   )
 }
 

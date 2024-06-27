@@ -3,7 +3,6 @@
     flex-direction: column;
     align-items: center;
     padding: 2cqmax 1cqmax !important;
-    height: 14cqmax;
     border-radius: .2cqmax;
     cursor: pointer;
     transition: .5s ease-in-out;
@@ -25,6 +24,12 @@
     border: 1px solid #000000;
 }
 .supply-card-index-text{
-    position: absolute;
-    top: .5cqmax;
+    margin-bottom: 1cqmax;
+}
+
+/* Responsive */
+@media screen and (max-width: 425px) {
+    .supply-chain-card-text{
+        font-size: 1.8cqmax;
+    }
 }

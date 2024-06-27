@@ -1,3 +1,7 @@
 .navbar-row{
     padding: 2cqmax;
+    align-items: center;
+}
+#logo-img{
+    width: 20cqmax;
 }

@@ -4,6 +4,9 @@
     font-weight: 200;
     padding: 4cqmax;
 }
+#hero-img{
+    width: 60cqmax;
+}
 .index-col{
     text-align: center;
     margin-top: 2cqmax;
@@ -55,4 +58,26 @@
     text-align: center;
     width: 100%;
     margin: 1cqmax;
+}
+
+/* Responsive */
+
+@media screen and (max-width: 1024px) {
+    .hero-text{
+        font-size: 4cqmax;
+    }
+}
+@media screen and (max-width: 768px) {
+    .supply-title-text{
+        font-size: 1.7cqmax;
+    }
+    #copyright-text{
+        font-size: 1.4cqmax;
+        margin: .5cqmax;
+    }
+}
+@media screen and (max-width: 425px) {
+    .hero-text{
+        text-align: center;
+    }
 }

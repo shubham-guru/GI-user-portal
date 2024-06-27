@@ -12,11 +12,14 @@ type IButton = {
     disabled?: boolean;
     loading?: boolean;
     htmlType?: ButtonHTMLType;
+    hidden?: boolean;
     onClick: (value: SyntheticEvent) => void;
 }
 
-const CustomButton: React.FC<IButton> = ({ type, size, text, icon, disabled=false, loading=false, onClick, htmlType="button" }) => {
+const CustomButton: React.FC<IButton> = ({ type, size, text, icon, disabled=false, loading=false, onClick, htmlType="button", hidden=false }) => {
   return (
+    <>
+    { !hidden ? 
     <Button 
      size={size} 
      type={type}
@@ -24,8 +27,12 @@ const CustomButton: React.FC<IButton> = ({ type, size, text, icon, disabled=fals
      className="custom-button" 
      icon={icon} 
      htmlType={htmlType}
-     disabled={disabled} loading={loading} 
+     disabled={disabled} 
+     loading={loading} 
      onClick={(e: SyntheticEvent) => onClick(e)}>{text}</Button>
+      : null}
+    </>
+   
   )
 }
 

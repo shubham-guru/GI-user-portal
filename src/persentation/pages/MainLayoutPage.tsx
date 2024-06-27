@@ -1,5 +1,5 @@
-import { Col, Row } from 'antd'
 import React, { ReactNode } from 'react'
+import { Col, Row } from 'antd'
 
 type IMainLayoutPage = {
     children: ReactNode

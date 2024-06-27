@@ -7,3 +7,10 @@
 #value-text{
     cursor: pointer;
 }
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+    .key-value-chip-text{
+        font-size: 1.5cqmax;
+    }
+}

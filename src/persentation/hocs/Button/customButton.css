@@ -4,6 +4,9 @@
     letter-spacing: .1cqmax;
     font-weight: 300;
 }
+.custom-button:disabled{
+    background-color: #ddd !important;
+}
 
 #primary-btn{
     background-color: #000000;
@@ -14,4 +17,11 @@
 #secondary-btn:hover{
     border: solid 1px #000000 !important;
     color: #000000;
+}
+
+@media screen and (max-width: 425px) {
+   .custom-button{
+    font-size: 1.7cqmax;
+    padding: .2cqmax 1.6cqmax !important;
+   }
 }
