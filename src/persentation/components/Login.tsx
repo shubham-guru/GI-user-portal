@@ -3,7 +3,6 @@ import { Col, Form, FormProps, Row, Typography } from 'antd'
 import { LoginDataFormType } from '../../domain/types/FormTypes';
 import { useNavigate } from 'react-router-dom';
 
-import "./styles/login.css"
 import { routes } from '../../domain/constants/routes';
 
 
