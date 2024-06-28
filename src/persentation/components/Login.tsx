@@ -9,22 +9,24 @@ import { routes } from '../../domain/constants/routes';
 const CustomButton = React.lazy(() => import("../hocs/Button/CustomButton"));
 const CustomInputs = React.lazy(() => import("../hocs/InputFileds/CustomInputs"));
 
-
 const Login = () => {
   const { Text, Link } = Typography;
   const navigate = useNavigate();
   const [loginData, setLoginData] = useState({
     email: "",
     password: ""
-  })
+  });
+
 
   const onFinish: FormProps<LoginDataFormType>['onFinish'] = (value) => {
     console.log("🚀 ~ Login ~ value:", value)
-  }
+  };
+
 
   const onFinishFailed: FormProps<LoginDataFormType>['onFinishFailed'] = (errorInfo) => {
     console.log('Failed:', errorInfo);
   };
+
   return (
     <Row className="auth-row">
       <Col span={24}>
@@ -65,14 +67,14 @@ const Login = () => {
 
           <Form.Item>
             <Suspense fallback="">
-              <CustomButton type="primary" htmlType="submit" size="middle" text="Login" onClick={() => { }} />
+              <CustomButton type="primary" htmlType="submit" size="middle" text="Login" onClick={()=>{}} />
             </Suspense>
           </Form.Item>
 
 
         </Form>
         <Text type="secondary">
-          Not Registered ? Start selling internationally - <Link onClick={()=>navigate(routes.SIGNUP)}>Register</Link>
+          Not Registered ? Start selling internationally - <Link onClick={() => navigate(routes.SIGNUP)}>Register</Link>
         </Text>
       </Col>
     </Row>

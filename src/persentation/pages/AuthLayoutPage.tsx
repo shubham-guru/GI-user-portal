@@ -5,6 +5,10 @@ import googleLogo from "../../assets/google.svg";
 import microsoftLogo from "../../assets/microsoft.svg";
 import Heading from '../hocs/Heading/Heading';
 import { routes } from '../../domain/constants/routes';
+import { TokenResponse, useGoogleLogin } from '@react-oauth/google';
+import { Query } from '../../data/ApiQueries/Query';
+import { HttpMethods } from '../../domain/constants/httpMethods';
+import { useNavigate } from 'react-router-dom';
 
 import "./styles/authLayoutPage.css";
 
@@ -13,9 +17,13 @@ type IAuthLayoutPage = {
 };
 
 const AuthLayoutPage: React.FC<IAuthLayoutPage> = ({ children }) => {
+
+  const googleUrl = import.meta.env.VITE_GOOGLE_USER_AUTH_URL;
   const { Text, Title } = Typography;
   const url = window.location.href;
-  const [heading, setHeading] = useState<string>("")
+  const navigate = useNavigate();
+  const [heading, setHeading] = useState<string>("");
+  const [user, setUser] = useState<TokenResponse | null>(null);
 
   useEffect(() => {
     if (url.includes(routes.LOGIN)) {
@@ -24,6 +32,38 @@ const AuthLayoutPage: React.FC<IAuthLayoutPage> = ({ children }) => {
       setHeading("Register")
     }
   }, [url]);
+
+  const googleAuth = useGoogleLogin({
+    onSuccess: (codeResponse: TokenResponse) => {
+      setUser(codeResponse);
+    },
+    onError: (error) => console.log('Login Failed:', error),
+  });
+
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (user) {
+        try {
+          const url = `${googleUrl}${user.access_token}`;
+          const token = user.access_token;
+
+          const userData = await Query(HttpMethods.GET, url, token);
+
+          if (userData && userData.status === 200) {
+            console.log("🚀 ~ userData:", userData.data);
+            navigate(routes.AGREEMENT)
+          } else {
+            console.error('Failed to fetch user data:', userData.statusText || userData.message);
+          }
+        } catch (error) {
+          console.error('Error fetching user data:', error);
+        }
+      }
+    };
+
+    fetchUserData();
+  }, [user]);
 
   return (
     <Row className="auth-layout-container">
@@ -39,7 +79,7 @@ const AuthLayoutPage: React.FC<IAuthLayoutPage> = ({ children }) => {
           <Title level={3}>{heading}</Title>
           <div className="login-auth-layout-div">
             <Flex align="center" justify="space-evenly">
-              <Image src={googleLogo} style={{ cursor: "pointer" }} alt="google-logo" preview={false} width={40} />
+              <Image src={googleLogo} style={{ cursor: "pointer" }} onClick={()=>googleAuth()} alt="google-logo" preview={false} width={40} />
               <Image src={microsoftLogo} style={{ cursor: "pointer" }} alt="microsoft-logo" preview={false} width={40} />
             </Flex>
             <Text>or</Text>

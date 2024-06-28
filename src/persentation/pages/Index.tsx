@@ -87,7 +87,7 @@ const Index = () => {
   const onFinish: FormProps<IndexPageFormType>['onFinish'] = () => {
     // Converting Grams into Kg and calculating fare
     if (!unit || unit === weightUnits[0]) {
-        setFare(calculateFare(calculateData.totalWeight * 0.001));
+          setFare(calculateFare(calculateData.totalWeight * 0.001))
     } else if (unit === weightUnits[1]) {
         setFare(calculateFare(calculateData.totalWeight));
     }
@@ -255,14 +255,14 @@ const Index = () => {
 
           <Col xs={0} md={10} lg={12}>
             <Text className="calculate-rate-text">
-              *Lighest Fare : <br /> <span id="rate-fare-span">&#x20b9; {fare}/- </span>
+              *Lighest Fare : <br /> <span id="rate-fare-span">&#x20b9; {fare.toFixed(1)}/- </span>
             </Text>
           </Col>
 
           <Suspense fallback="">
             <CustomModal title="Total Fare" isModalOpen={isModalOpen} handleOk={handleOk} handleCancel={handleCancel} children={ 
             <Text className="calculate-rate-text">
-                *Lighest Fare : <br /> <span id="rate-fare-span">&#x20b9; {fare}/-</span>
+                *Lighest Fare : <br /> <span id="rate-fare-span">&#x20b9; {fare.toFixed(1)}/-</span>
             </Text>}/>
           </Suspense>
 

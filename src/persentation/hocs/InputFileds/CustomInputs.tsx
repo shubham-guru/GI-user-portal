@@ -28,7 +28,7 @@ const CustomInputs: React.FC<ICustomInputs> = ({ placeholder, type, required=tru
     }
 
     const selectAfter = (
-        <Select defaultValue={ addonAfter && addonAfter[0]} value={units} onChange={(e) => handleUnitsChange(e)}>
+        <Select defaultValue={ units ? units : addonAfter && addonAfter[0]} value={units} onChange={(e) => handleUnitsChange(e)}>
           {  addonAfter?.map((item, index) => {
                 return(
                     <Option key={index} value={item}>{item}</Option>
