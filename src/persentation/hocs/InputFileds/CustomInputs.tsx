@@ -38,7 +38,8 @@ const CustomInputs: React.FC<ICustomInputs> = ({ placeholder, type, required=tru
       );
       
   return (
-    <Input placeholder={placeholder} 
+    <Input
+        placeholder={placeholder} 
         type={type} 
         onChange={(e) => onChange(e.target)}
         required={required} 

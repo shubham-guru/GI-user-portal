@@ -5,7 +5,7 @@
     font-weight: 300 !important;
 }
 .ant-input:focus{
-    border: solid .1px #686868 !important;
+    border: none !important;
 }
 .ant-input:hover{
     border: none !important;

@@ -1,0 +1,22 @@
+.auth-layout-container {
+    overflow: hidden;
+}
+.image-col {
+    height: 100vh;
+}
+.login-auth-layout-col{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+.login-auth-layout-div{
+    padding: 2cqmax;
+    width: 30cqmax;
+}
+
+.auth-row {
+    width: 100%;
+    text-align: center;
+    margin-top: 2cqmax;
+}
