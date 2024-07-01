@@ -1,5 +1,5 @@
 export type HeavyCargoFormType = {
-    name: string;
+    fullName: string;
     email: string;
     shipments: string;
     destination: string;

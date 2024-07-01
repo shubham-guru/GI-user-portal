@@ -33,6 +33,7 @@ const AuthLayoutPage: React.FC<IAuthLayoutPage> = ({ children }) => {
     }
   }, [url]);
 
+
   const googleAuth = useGoogleLogin({
     onSuccess: (codeResponse: TokenResponse) => {
       setUser(codeResponse);
@@ -47,7 +48,8 @@ const AuthLayoutPage: React.FC<IAuthLayoutPage> = ({ children }) => {
         try {
           const url = `${googleUrl}${user.access_token}`;
           const token = user.access_token;
-
+          
+          // Google Authentication
           const userData = await Query(HttpMethods.GET, url, token);
 
           if (userData && userData.status === 200) {
@@ -68,11 +70,11 @@ const AuthLayoutPage: React.FC<IAuthLayoutPage> = ({ children }) => {
   return (
     <Row className="auth-layout-container">
       <Flex align="center" justify="space-between">
-        <Col span={12} className="image-col">
-          <Image src={authImage} alt="auth-page-image" preview={false} />
+        <Col xs={0} md={0} lg={12} className="image-col">
+          <Image src={authImage} alt="auth-page-image" preview={false} id="auth-image" />
         </Col>
 
-        <Col span={12} className="login-auth-layout-col">
+        <Col xs={24} md={24} lg={12} className="login-auth-layout-col">
           <Heading text="GURU INTERNATIONALS" fontWeight={500} />
           <Text type="secondary">The most lightest supply chain for your products</Text>
           <Divider />

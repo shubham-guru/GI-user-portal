@@ -3,6 +3,7 @@
     border-radius: .2cqmax;
     letter-spacing: .1cqmax;
     font-weight: 300;
+    margin: 1cqmax 0cqmax;
 }
 .custom-button:disabled{
     background-color: #ddd !important;
