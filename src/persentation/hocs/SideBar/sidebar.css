@@ -1,0 +1,12 @@
+.side-bar-flex{
+    width: 20%;
+}
+.sidebar-container{
+    background-color: white !important;
+}
+.side-bar-div {
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     padding: 3cqmax 3cqmax 1cqmax 3cqmax;
+}

@@ -1,0 +1,11 @@
+.order-box-col{
+    background-color: #181818;
+    color: #eee;
+    padding: 2cqmax;
+    border-radius: .2cqmax;
+    cursor: pointer;
+}
+.order-box-text{
+    font-size: 2cqmax;
+    color: #eee;
+}

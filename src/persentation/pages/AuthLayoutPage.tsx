@@ -6,9 +6,13 @@ import microsoftLogo from "../../assets/microsoft.svg";
 import Heading from '../hocs/Heading/Heading';
 import { routes } from '../../domain/constants/routes';
 import { TokenResponse, useGoogleLogin } from '@react-oauth/google';
+import { useMsal } from "@azure/msal-react";
+import { useDispatch } from 'react-redux';
 import { Query } from '../../data/ApiQueries/Query';
 import { HttpMethods } from '../../domain/constants/httpMethods';
 import { useNavigate } from 'react-router-dom';
+import { loginRequest } from '../../authConfig';
+import { saveUserData } from '../../redux/slice/userDataSlice';
 
 import "./styles/authLayoutPage.css";
 
@@ -19,9 +23,11 @@ type IAuthLayoutPage = {
 const AuthLayoutPage: React.FC<IAuthLayoutPage> = ({ children }) => {
 
   const googleUrl = import.meta.env.VITE_GOOGLE_USER_AUTH_URL;
-  const { Text, Title } = Typography;
-  const url = window.location.href;
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { Text, Title } = Typography;
+  const { instance } = useMsal();
+  const url = window.location.href;
   const [heading, setHeading] = useState<string>("");
   const [user, setUser] = useState<TokenResponse | null>(null);
 
@@ -41,6 +47,12 @@ const AuthLayoutPage: React.FC<IAuthLayoutPage> = ({ children }) => {
     onError: (error) => console.log('Login Failed:', error),
   });
 
+  const microsoftAuth = () => {
+    instance.loginPopup(loginRequest).catch(e => {
+      console.error(e);
+    });
+  };
+
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -50,14 +62,24 @@ const AuthLayoutPage: React.FC<IAuthLayoutPage> = ({ children }) => {
           const token = user.access_token;
           
           // Google Authentication
-          const userData = await Query(HttpMethods.GET, url, token);
+          await Query(HttpMethods.GET, url, token).then((res) => {
+              if(res?.status === 200) {
+                const info = res?.data;
+                const data = {
+                  email: info.email,
+                  firstName: info.given_name,
+                  lastName: info.family_name,
+                  image: info.picture,
+                  verifiedEmail: info.verified_email,
+                  id: info.id
+                }
+                dispatch(saveUserData(data))
+                navigate(routes.AGREEMENT);
+              }
+          }).catch((err) => {
+            console.error('Failed to fetch user data:', err.statusText || err.message);
+          })
 
-          if (userData && userData.status === 200) {
-            console.log("🚀 ~ userData:", userData.data);
-            navigate(routes.AGREEMENT)
-          } else {
-            console.error('Failed to fetch user data:', userData.statusText || userData.message);
-          }
         } catch (error) {
           console.error('Error fetching user data:', error);
         }
@@ -65,7 +87,7 @@ const AuthLayoutPage: React.FC<IAuthLayoutPage> = ({ children }) => {
     };
 
     fetchUserData();
-  }, [user]);
+  }, [user, dispatch, navigate]);
 
   return (
     <Row className="auth-layout-container">
@@ -82,7 +104,7 @@ const AuthLayoutPage: React.FC<IAuthLayoutPage> = ({ children }) => {
           <div className="login-auth-layout-div">
             <Flex align="center" justify="space-evenly">
               <Image src={googleLogo} style={{ cursor: "pointer" }} onClick={()=>googleAuth()} alt="google-logo" preview={false} width={40} />
-              <Image src={microsoftLogo} style={{ cursor: "pointer" }} alt="microsoft-logo" preview={false} width={40} />
+              <Image src={microsoftLogo} style={{ cursor: "pointer" }} alt="microsoft-logo" onClick={() => microsoftAuth()} preview={false} width={40} />
             </Flex>
             <Text>or</Text>
             {children}

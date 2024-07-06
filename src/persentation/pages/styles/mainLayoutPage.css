@@ -1,0 +1,13 @@
+.main-layout-flex{
+    padding: 2cqmax 2cqmax 0cqmax 2cqmax;
+}
+#main-layout-nav-text{
+    font-size: 1.2cqmax;
+    font-weight: 300;
+    letter-spacing: .2cqmax;
+    font-style: italic !important;
+}
+.side-bar-content{
+    margin: 24px 16px;
+    padding: 2.2cqmax;
+}

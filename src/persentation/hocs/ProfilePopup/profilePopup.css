@@ -1,0 +1,15 @@
+.profile-dropdown-image{
+    border-radius: 50%;
+    cursor: pointer;
+}
+#user-initial-div{
+    background-color: #000000;
+    padding: .2cqmax 1.2cqmax;
+    border-radius: 50%;
+    cursor: pointer;
+}
+.user-initial-text{
+    font-size: 2cqmax;
+    text-transform: uppercase;
+    color: #ffffff;
+}

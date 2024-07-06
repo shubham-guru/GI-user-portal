@@ -1,0 +1,11 @@
+.order-id-span{
+    font-size: 2.3cqmax;
+    color: #000;
+}
+#copy-icon{
+    cursor: pointer;
+}
+#order-id-span-pending{
+    color: #D09523;
+    margin-right: 1cqmax;
+}

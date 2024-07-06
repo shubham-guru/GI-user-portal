@@ -17,11 +17,12 @@ type ICustomInputs = {
     status?: InputStatus;
     size?: SizeType;
     value: string | number;
+    label?: boolean;
     addonUnit: (value: string) => void;
     onChange: (e: EventTarget) => void;
 }
 
-const CustomInputs: React.FC<ICustomInputs> = ({ placeholder, type, required = true, onChange, readonly = false, rules, addonAfter, name, status, size = "large", value, addonUnit }) => {
+const CustomInputs: React.FC<ICustomInputs> = ({ placeholder, type, required = true, onChange, readonly = false, rules, addonAfter, name, status, label=false, size = "large", value, addonUnit }) => {
     const { Option } = Select;
     const [units, setUnits] = useState<string | undefined>(addonAfter && addonAfter[0]);
 
@@ -44,6 +45,7 @@ const CustomInputs: React.FC<ICustomInputs> = ({ placeholder, type, required = t
         <Form.Item
             name={name}
             rules={rules}
+            label={label ? placeholder : null}
         >
             <Input
                 placeholder={placeholder}

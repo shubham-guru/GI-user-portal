@@ -25,3 +25,19 @@ export type SignupFormType = {
     cPassword: string;
     phone: string;
 }
+
+export type AddressPersonalInfoType = {
+    fullName: string;
+    email: string;
+    phone: string;
+    alternatePhone: string;
+}
+
+export type AddressType = {
+    companyName: string;
+    completeAddress: string;
+    pinCode: string;
+    city: string;
+    state: string;
+    country: string;
+}

@@ -13,10 +13,11 @@ type IButton = {
     loading?: boolean;
     htmlType?: ButtonHTMLType;
     hidden?: boolean;
+    style?: object;
     onClick: (value: SyntheticEvent) => void;
 }
 
-const CustomButton: React.FC<IButton> = ({ type, size, text, icon, disabled=false, loading=false, onClick, htmlType="button", hidden=false }) => {
+const CustomButton: React.FC<IButton> = ({ type, size, text, icon, disabled=false, loading=false, onClick, htmlType="button", hidden=false, style }) => {
   return (
     <>
     { !hidden ? 
@@ -29,6 +30,7 @@ const CustomButton: React.FC<IButton> = ({ type, size, text, icon, disabled=fals
      htmlType={htmlType}
      disabled={disabled} 
      loading={loading} 
+     style={style}
      onClick={(e: SyntheticEvent) => onClick(e)}>{text}</Button>
       : null}
     </>
