@@ -53,7 +53,7 @@ const Login = () => {
             /></Suspense>
 
             <Suspense fallback="">
-              <CustomButton type="primary" htmlType="submit" size="middle" text="Login" onClick={()=>{}} />
+              <CustomButton type="primary" htmlType="submit" size="middle" text="Login" onClick={()=>navigate(routes.AGREEMENT)} />
             </Suspense>
 
         </Form>
