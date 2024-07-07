@@ -15,6 +15,7 @@ type IMainLayoutPage = {
 const ProfilePopup = React.lazy(() => import("../hocs/ProfilePopup/ProfilePopup"));
 const SideBar = React.lazy(() => import("../hocs/SideBar/SideBar"));
 const CustomButton = React.lazy(() => import("../hocs/Button/CustomButton"));
+const AddOrders = React.lazy(() => import("../components/AddOrders"));
 
 const MainLayoutPage: React.FC<IMainLayoutPage> = ({ children }) => {
 
@@ -22,6 +23,7 @@ const MainLayoutPage: React.FC<IMainLayoutPage> = ({ children }) => {
     const navigate = useNavigate();
     const { Text } = Typography;
     const [href, setHref] = useState<string>("");
+    const [showModal, setShowModal] = useState<boolean>(false);
 
     // If Agreement page then logo will navigate to index page else dashboard
     useEffect(() => {
@@ -46,7 +48,7 @@ const MainLayoutPage: React.FC<IMainLayoutPage> = ({ children }) => {
                     {
                         url.includes(routes.AGREEMENT) ?
                             <Image src={logo} preview={false} alt="logo" width={200} style={{ cursor: "pointer" }} onClick={() => navigate(href)} /> :
-                            <Suspense fallback=""><CustomButton type="primary" text="Add Order" size="middle" onClick={() => navigate(routes.ORDERS)} icon={<PlusCircleOutlined />} /></Suspense>
+                            <Suspense fallback=""><CustomButton type="primary" text="Add Order" size="middle" onClick={() => setShowModal(true)} icon={<PlusCircleOutlined />} /></Suspense>
                     }
                     <Text type="secondary" id="main-layout-nav-text">Start Selling Internationally</Text>
                     <Suspense fallback=""><ProfilePopup /></Suspense>
@@ -59,6 +61,10 @@ const MainLayoutPage: React.FC<IMainLayoutPage> = ({ children }) => {
                     }}
                 >
                     {children}
+
+                    {
+                        showModal ? <Suspense fallback=""><AddOrders isOpen={showModal} onCancel={(value: boolean) => setShowModal(value)} /> </Suspense>: null
+                    }
                 </Content>
             </Layout>
         </Layout>

@@ -1,0 +1,10 @@
+.add-new-product-row{
+    background-color: #eee;
+    padding: 2cqmax;
+    border-radius: .2cqmax;
+}
+#product-delete-icon{
+    color: red;
+    font-size: 1.5cqmax;
+    cursor: pointer;
+}

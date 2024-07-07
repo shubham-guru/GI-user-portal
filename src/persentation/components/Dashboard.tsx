@@ -126,7 +126,7 @@ const Dashboard = () => {
               addonUnit={() => { }}
               label
               onChange={(e: any) => setAddressDetails({ ...addressDetails, companyName: e.value })}
-              value={addressDetails.companyName} /></Suspense>
+              value={addressDetails?.companyName || ""} /></Suspense>
 
             {/* Complete Address */}
             <Suspense fallback=""><CustomInputs placeholder="Complete Address - Street no / Building no, Street no, Area"

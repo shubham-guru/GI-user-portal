@@ -1,0 +1,23 @@
+.add-orders-flex{
+    padding: 1.6cqmax;
+    text-align: left;
+}
+.add-orders-fieldset{
+    border: solid 1px #ddd;
+    font-size: 1.3cqmax;
+    border-radius: .2cqmax;
+    line-height: 3cqmax;
+    padding: 2cqmax;
+}
+.add-orders-select{
+    width: 100%;
+    margin-bottom: 1cqmax;
+    cursor: pointer;
+}
+.add-order-modal{
+    position: relative;
+    top: 2cqmax;
+}
+.ant-modal-title{
+    font-size: 2cqmax !important;
+}
