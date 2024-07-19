@@ -31,7 +31,7 @@ const Login = () => {
       if(res.status === 200){
         Alert("success", res?.data?.message);
         const info = res?.data?.result?.rest;
-        const token = res?.data?.token;
+        const token = res?.data?.result?.token;
         setLoading(false);
         const data = {
           firstName: info.FULLNAME.split(" ")[0],
