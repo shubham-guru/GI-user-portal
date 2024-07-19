@@ -2,6 +2,13 @@
     padding: 1.6cqmax;
     text-align: left;
 }
+.ant-card{
+    margin: 1cqmax !important;
+}
+.ant-card-head-title{
+    font-size: 2cqmax !important;
+    font-weight: 400 !important;
+}
 .add-orders-fieldset{
     border: solid 1px #ddd;
     font-size: 1.3cqmax;
@@ -20,4 +27,19 @@
 }
 .ant-modal-title{
     font-size: 2cqmax !important;
+}
+.add-shipping-form{
+    background-color: #eee;
+    padding: 2cqmax;
+    margin-top: 1cqmax;
+}
+.add-orders-row{
+    padding: 1.6cqmax;
+}
+.shipping-text-pri{
+    font-size: 1.5cqmax;
+    letter-spacing: 2px;
+}
+.shipping-text-sec{
+    font-size: 1.3cqmax;
 }

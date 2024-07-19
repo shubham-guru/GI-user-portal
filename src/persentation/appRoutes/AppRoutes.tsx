@@ -26,8 +26,8 @@ const AppRoutes= () => {
       <Route path={routes.INDEX} element={<Suspense fallback=""><Index /></Suspense>} />
       <Route path={routes.LOGIN} element={<Suspense fallback=""><AuthLayoutPage children={<Login />} /></Suspense>} />
       <Route path={routes.SIGNUP} element={<Suspense fallback=""><AuthLayoutPage children={<SignUp />} /></Suspense>} />
-      <Route path={routes.AGREEMENT} element={<Suspense fallback=""><MainLayoutPage children={<Agreement />} /></Suspense>} />
       <Route path={routes.DASHBOARD} element={<Suspense fallback=""><MainLayoutPage children={<Dashboard />} /></Suspense>} />
+      <Route path={routes.AGREEMENT} element={<Suspense fallback=""><MainLayoutPage children={<Agreement />} /></Suspense>} />
       <Route path={routes.ORDERS} element={<Suspense fallback=""><MainLayoutPage children={<Orders />} /></Suspense>} />
       <Route path={routes.ORDERS_ID} element={<Suspense fallback=""><MainLayoutPage children={<OrderDetails />} /></Suspense>} />
       <Route path={routes.INVENTORY} element={<Suspense fallback=""><MainLayoutPage children={<Inventory />} /></Suspense>} />

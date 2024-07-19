@@ -2,37 +2,37 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { UserData } from '../../domain/interfaces/UserData';
 
-const info: UserData = {
+const initialInfo: UserData = {
   email: '',
   firstName: '',
   lastName: '',
   image: '',
+  phone: '',
   verifiedEmail: false,
-  id: ''
+  id: '',
+  address: '',
+  isAgreement: false,
+  token: ''
 }
 
 const userSlice = createSlice({
   name: 'userDetails',
   initialState: {
-    currentUser: info
+    currentUser: initialInfo
   },
   reducers: {
     saveUserData: (state, action:PayloadAction<UserData>) => {      
       state.currentUser = action.payload;
     },
     clearUserInfo: (state) => {
-      state.currentUser = {
-        email: '',
-        firstName: '',
-        lastName: '',
-        image: '',
-        verifiedEmail: false,
-        id: ''
-      };
+      state.currentUser = initialInfo;
+    },
+    updateAddress: (state, action: PayloadAction<string>) => {
+      state.currentUser.address = action.payload;
     },
   },
 });
 
-export const { saveUserData } = userSlice.actions;
+export const { saveUserData, updateAddress } = userSlice.actions;
 
 export default userSlice.reducer;

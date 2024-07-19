@@ -8,7 +8,7 @@ import "./customInput.css"
 
 type ICustomInputs = {
     placeholder: string;
-    type: string;
+    type?: string;
     required?: boolean;
     readonly?: boolean;
     name: string
@@ -18,11 +18,13 @@ type ICustomInputs = {
     size?: SizeType;
     value: string | number;
     label?: boolean;
+    width?: number;
+    disabled?: boolean;
     addonUnit: (value: string) => void;
-    onChange: (e: EventTarget) => void;
+    onChange?: (e: EventTarget) => void;
 }
 
-const CustomInputs: React.FC<ICustomInputs> = ({ placeholder, type, required = true, onChange, readonly = false, rules, addonAfter, name, status, label=false, size = "large", value, addonUnit }) => {
+const CustomInputs: React.FC<ICustomInputs> = ({ placeholder, type, required = true, onChange, readonly = false, rules, addonAfter, name, status, width, disabled=false , label=false, size = "large", value, addonUnit }) => {
     const { Option } = Select;
     const [units, setUnits] = useState<string | undefined>(addonAfter && addonAfter[0]);
 
@@ -50,9 +52,11 @@ const CustomInputs: React.FC<ICustomInputs> = ({ placeholder, type, required = t
             <Input
                 placeholder={placeholder}
                 type={type}
-                onChange={(e) => onChange(e.target)}
+                style={{ width: `${width}cqmax` }}
+                onChange={(e) => onChange && onChange(e.target)}
                 required={required}
                 readOnly={readonly}
+                disabled={disabled}
                 addonAfter={addonAfter && selectAfter}
                 status={status}
                 size={size}

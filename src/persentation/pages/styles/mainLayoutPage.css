@@ -10,4 +10,5 @@
 .side-bar-content{
     margin: 24px 16px;
     padding: 2.2cqmax;
+    overflow-y: scroll;
 }

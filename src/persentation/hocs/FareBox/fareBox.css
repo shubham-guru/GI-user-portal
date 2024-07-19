@@ -1,0 +1,9 @@
+.fare-box-flex{
+    border: solid 1px #ddd;
+    border-radius: .2cqmax;
+    width: 10cqmax;
+    padding: .4cqmax 1.3cqmax;
+    margin: 1cqmax;
+    cursor: pointer;
+    box-shadow: 2px 2px 10px #e6e6e6;
+}

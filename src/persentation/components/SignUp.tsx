@@ -4,6 +4,11 @@ import { Suspense } from "react"
 import { useNavigate } from "react-router-dom"
 import { routes } from "../../domain/constants/routes"
 import { SignupFormType } from "../../domain/types/FormTypes"
+import { Query } from "../../data/ApiQueries/Query"
+import { HttpMethods } from "../../domain/constants/httpMethods"
+import { apiRoutes } from "../../data/routes/apiRoutes"
+import { Alert } from "../hocs/Alert/Alert"
+import { registerType } from "../../domain/constants/registerTypes"
 
 
 const CustomButton = React.lazy(() => import("../hocs/Button/CustomButton"));
@@ -12,6 +17,7 @@ const CustomInputs = React.lazy(() => import("../hocs/InputFileds/CustomInputs")
 const SignUp = () => {
   const { Text, Link } = Typography;
   const navigate = useNavigate();
+  const [loading, setLoading] = useState<boolean>(false);
   const [signUpData, setSignUpData] = useState({
     name: "",
     email: "",
@@ -20,8 +26,38 @@ const SignUp = () => {
     phone: ""
   })
 
-  const onFinish: FormProps<SignupFormType>['onFinish'] = (value) => {
-  console.log("🚀 ~ SignUp ~ value:", value)
+  const onFinish: FormProps<SignupFormType>['onFinish'] = async (value) => {
+      setLoading(true);
+      if(value.password !== value.cPassword){
+        Alert("error", "Password does not match");
+        setLoading(false);
+      } 
+      if(value.password.length < 6) {
+        Alert("error", "Password must be more than 6 letters");
+        setLoading(false);
+      }
+      
+      else {
+        const body = {
+          fullName: value.name,
+          email: value.email,
+          password: value.password,
+          phone: value.phone,
+          registeredFrom: registerType.MANUAL
+        }
+        await Query(HttpMethods.POST, apiRoutes.CREATE_USER, body).then((res) => {
+          if(res.status === 200){
+            Alert("success", res?.data?.message);
+            setLoading(false);
+            navigate(routes.LOGIN)
+          } else {
+            Alert("error", res?.data?.message);
+            setLoading(false);
+          }
+        }).catch((err) => {
+          console.log("🚀 ~ awaitQuery ~ err:", err)
+        })
+      }
   }
 
   const onFinishFailed: FormProps<SignupFormType>['onFinishFailed'] = (errorInfo) => {
@@ -94,7 +130,7 @@ const SignUp = () => {
             /> </Suspense>
 
             <Suspense fallback="">
-              <CustomButton type="primary" htmlType="submit" size="middle" text="Register" onClick={() => { }} />
+              <CustomButton type="primary" htmlType="submit" loading={loading} size="middle" text="Register" onClick={() => { }} />
             </Suspense>
 
 

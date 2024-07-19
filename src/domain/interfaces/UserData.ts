@@ -1,8 +1,12 @@
 export interface UserData {
-    email: string;
+    email?: string;
     firstName: string;
     lastName: string;
     image: string;
-    verifiedEmail: boolean;
-    id: string;
+    phone?: string;
+    verifiedEmail?: boolean;
+    id?: string;
+    token?: string;
+    address?: string;
+    isAgreement?: boolean;
 }

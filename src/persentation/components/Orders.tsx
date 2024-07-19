@@ -21,7 +21,7 @@ const Orders = () => {
       {
         dummyOrders.map((order, index: number) => {
           return (
-            <Col span={6} style={{ margin: "" }}>
+            <Col span={6} key={index}>
               <Suspense fallback="" key={index}>
                 <OrderBox text={order.id} link={order.link} />
               </Suspense>

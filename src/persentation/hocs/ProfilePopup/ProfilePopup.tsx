@@ -3,10 +3,14 @@ import { UserData } from '../../../domain/interfaces/UserData';
 
 import "./profilePopup.css"
 import { Image, Typography } from 'antd';
+import { useEffect, useState } from 'react';
 
 const ProfilePopup = () => {
   const user = useSelector((state: { userDetails: { currentUser: UserData } }) => state.userDetails.currentUser);
-  const userImage = user?.image;
+  const [userImage, setUserImage] = useState<string>(user?.image);
+  useEffect(() => {
+    setUserImage(user?.image)
+  }, [])
   const firstLetter = user?.firstName.charAt(0) || '';
   const { Text } = Typography;
 

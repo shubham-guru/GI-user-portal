@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { UserData } from '../../domain/interfaces/UserData';
 import { useNavigate } from 'react-router-dom';
@@ -6,6 +6,10 @@ import { Col, Flex, Typography } from 'antd';
 import { routes } from '../../domain/constants/routes';
 
 import "./styles/agreement.css"
+import { Query } from '../../data/ApiQueries/Query';
+import { HttpMethods } from '../../domain/constants/httpMethods';
+import { apiRoutes } from '../../data/routes/apiRoutes';
+import { Alert } from '../hocs/Alert/Alert';
 
 const CustomButton = React.lazy(() => import("../hocs/Button/CustomButton"));
 
@@ -13,8 +17,26 @@ const Agreement = () => {
   const { Text, Title } = Typography;
 
   const user = useSelector((state: { userDetails: { currentUser: UserData } }) => state.userDetails.currentUser);
+
+  const [loading, setLoading] = useState<boolean>(false);
+
   const navigate = useNavigate();
   const userName = user?.firstName + " " + user?.lastName; // Getting User name
+
+  const handleAgreement = async () => {
+    setLoading(true);
+
+      await Query(HttpMethods.PUT, apiRoutes.CREATE_USER, {}, user.token).then((res) => {
+        if(res?.status === 200) {
+          navigate(routes.DASHBOARD)
+        }
+        setLoading(false);
+      }).catch((err) => {
+        setLoading(false);
+        Alert("error", err)
+        console.log("🚀 ~ awaitQuery ~ err:", err)
+      })
+  }
 
   return (
     <Flex className="agreement-flex" vertical>
@@ -29,7 +51,7 @@ const Agreement = () => {
       </Col>
 
       <Col span={20} className="agreement-col">
-        <Suspense fallback=""><CustomButton type="primary" size="middle" text="Ok, Proceed to dashboard" onClick={() => navigate(routes.DASHBOARD)} /></Suspense>
+        <Suspense fallback=""><CustomButton type="primary" size="middle" text="Ok, Proceed to dashboard" loading={loading} onClick={handleAgreement} /></Suspense>
       </Col>
     </Flex>
   )

@@ -39,7 +39,7 @@ const MainLayoutPage: React.FC<IMainLayoutPage> = ({ children }) => {
     } = theme.useToken();
 
     return (
-        <Layout>
+        <Layout style={{height: "100vh", overflowY: "hidden"}}>
             {
                 !url.includes(routes.AGREEMENT) ? <Suspense fallback=""><SideBar /></Suspense> : null
             }

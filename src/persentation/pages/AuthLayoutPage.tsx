@@ -8,12 +8,16 @@ import { routes } from '../../domain/constants/routes';
 import { TokenResponse, useGoogleLogin } from '@react-oauth/google';
 import { useMsal } from "@azure/msal-react";
 import { useDispatch } from 'react-redux';
-import { Query } from '../../data/ApiQueries/Query';
+import { Query, ThirdPartyQuery } from '../../data/ApiQueries/Query';
 import { HttpMethods } from '../../domain/constants/httpMethods';
 import { useNavigate } from 'react-router-dom';
 import { loginRequest } from '../../authConfig';
 import { saveUserData } from '../../redux/slice/userDataSlice';
+import { UserData } from '../../domain/interfaces/UserData';
 
+import { apiRoutes } from '../../data/routes/apiRoutes';
+import { Alert } from '../hocs/Alert/Alert';
+import { registerType } from '../../domain/constants/registerTypes';
 import "./styles/authLayoutPage.css";
 
 type IAuthLayoutPage = {
@@ -29,7 +33,6 @@ const AuthLayoutPage: React.FC<IAuthLayoutPage> = ({ children }) => {
   const { instance } = useMsal();
   const url = window.location.href;
   const [heading, setHeading] = useState<string>("");
-  const [user, setUser] = useState<TokenResponse | null>(null);
 
   useEffect(() => {
     if (url.includes(routes.LOGIN)) {
@@ -42,7 +45,7 @@ const AuthLayoutPage: React.FC<IAuthLayoutPage> = ({ children }) => {
 
   const googleAuth = useGoogleLogin({
     onSuccess: (codeResponse: TokenResponse) => {
-      setUser(codeResponse);
+      fetchUserData(codeResponse)
     },
     onError: (error) => console.log('Login Failed:', error),
   });
@@ -53,41 +56,82 @@ const AuthLayoutPage: React.FC<IAuthLayoutPage> = ({ children }) => {
     });
   };
 
+  const fetchUserData = async (data: TokenResponse) => {
+    if (data) {
+      try {
+        const url = `${googleUrl}${data.access_token}`;
+        const token = data.access_token;
+        
+        // Google Authentication
+        await ThirdPartyQuery(HttpMethods.GET, url, token).then(async (res) => {
+            if(res?.status === 200) {
+              const info = res?.data;
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      if (user) {
-        try {
-          const url = `${googleUrl}${user.access_token}`;
-          const token = user.access_token;
-          
-          // Google Authentication
-          await Query(HttpMethods.GET, url, token).then((res) => {
-              if(res?.status === 200) {
-                const info = res?.data;
-                const data = {
-                  email: info.email,
-                  firstName: info.given_name,
-                  lastName: info.family_name,
-                  image: info.picture,
-                  verifiedEmail: info.verified_email,
-                  id: info.id
-                }
-                dispatch(saveUserData(data))
-                navigate(routes.AGREEMENT);
+              const data: UserData = {
+                firstName: info.given_name,
+                lastName: info.family_name,
+                image: info.picture,
+                verifiedEmail: info.verified_email,
               }
-          }).catch((err) => {
-            console.error('Failed to fetch user data:', err.statusText || err.message);
-          })
+              const registerBody = {
+                fullName: data.firstName+ " " +data.lastName,
+                password: data.id,
+                phone: data.phone,
+                image: data.image,
+                registeredFrom: registerType.GOOGLE
+              }
+              const loginBody = {
+                email: info.email,
+                password: info.id
+              }
+              heading === "Register" ? 
+              // GOOGLE REGISTER QUERY
+              await Query(HttpMethods.POST, apiRoutes.CREATE_USER, registerBody).then((res) => {
+                if(res.status === 200) {
+                  Alert("success", res?.data?.message);
+                  dispatch(saveUserData(data));
+                  // setLoading(false);
+                  navigate(routes.AGREEMENT)
+                } else {
+                  Alert("error", res?.data?.message);
+                  // setLoading(false);
+                }
+              }).catch((err) => {
+                console.log("🚀 ~ awaitQuery ~ err:", err)
+              }) : 
 
-        } catch (error) {
-          console.error('Error fetching user data:', error);
-        }
+              // GOOGLE LOGIN QUERY
+              await Query(HttpMethods.POST, apiRoutes.LOGIN, loginBody).then((res) => {
+                if(res.status === 200) {
+                  Alert("success", res?.data?.message);
+                  const info = res?.data?.result?.rest;
+                  data.token = res?.data?.result?.token;
+                  data.address = res?.data?.result?.rest?.ADDRESS;
+                  // setLoading(false);
+                  dispatch(saveUserData(data))
+                  if(!info.IS_AGREEMENT){
+                    navigate(routes.AGREEMENT)
+                  } else {
+                    navigate(routes.DASHBOARD)
+                  }
+                } else {
+                  Alert("error", res?.data?.message);
+                  // setLoading(false);
+                }
+              }).catch((err) => {
+                console.log("🚀 ~ awaitQuery ~ err:", err)
+              })
+            }
+        }).catch((err) => {
+          console.error('Failed to fetch user data:', err.statusText || err.message);
+        })
+
+      } catch (error) {
+        console.error('Error fetching user data:', error);
       }
-    };
+    }
+  };
 
-    fetchUserData();
-  }, [user, dispatch, navigate]);
 
   return (
     <Row className="auth-layout-container">
