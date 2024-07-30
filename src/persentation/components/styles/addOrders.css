@@ -21,6 +21,13 @@
     margin-bottom: 1cqmax;
     cursor: pointer;
 }
+.ant-select-selection-item{
+    color: #000 !important;
+    text-align: left !important;
+}
+.ant-select-arrow{
+    color: #222 !important;
+}
 .add-order-modal{
     position: relative;
     top: 2cqmax;

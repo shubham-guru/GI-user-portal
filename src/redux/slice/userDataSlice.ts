@@ -1,4 +1,3 @@
-
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { UserData } from '../../domain/interfaces/UserData';
 
@@ -12,7 +11,8 @@ const initialInfo: UserData = {
   id: '',
   address: '',
   isAgreement: false,
-  token: ''
+  token: '',
+  products: []
 }
 
 const userSlice = createSlice({
@@ -30,9 +30,12 @@ const userSlice = createSlice({
     updateAddress: (state, action: PayloadAction<string>) => {
       state.currentUser.address = action.payload;
     },
+    updateProducts: (state, action: PayloadAction<[{}]>) => {
+      state.currentUser.products = action.payload;
+    },
   },
 });
 
-export const { saveUserData, updateAddress } = userSlice.actions;
+export const { saveUserData, updateAddress, clearUserInfo, updateProducts } = userSlice.actions;
 
 export default userSlice.reducer;

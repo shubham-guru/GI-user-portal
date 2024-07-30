@@ -9,4 +9,5 @@ export interface UserData {
     token?: string;
     address?: string;
     isAgreement?: boolean;
+    products?: Array<{}>
 }

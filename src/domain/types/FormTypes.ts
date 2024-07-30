@@ -32,15 +32,3 @@ export type AddressPersonalInfoType = {
     phone: string;
     alternatePhone: string;
 }
-
-// export type AddressMerged = AddressPersonalInfoType & AddressType;
-
-export type NewProductsType = {
-    productName: string;
-    quantity: number;
-    hsn: string;
-    unitValue: number;
-    weight?: number;
-    color?: string;
-    size?: string;
-}

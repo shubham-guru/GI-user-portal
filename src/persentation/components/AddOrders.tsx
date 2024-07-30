@@ -1,8 +1,7 @@
 import React, { Suspense, useEffect, useState } from 'react'
-import { Card, Checkbox, Descriptions, DescriptionsProps, Divider, Flex, Form, FormProps, message, Modal, Radio, RadioChangeEvent, Select, Steps, Tag, theme, Typography } from 'antd';
+import { Card, Checkbox, Descriptions, DescriptionsProps, Divider, Flex, Form, message, Modal, Radio, RadioChangeEvent, Select, Steps, Tag, theme, Typography } from 'antd';
 
 import { CaretDownOutlined } from '@ant-design/icons';
-import { IndexPageFormType } from '../../domain/types/FormTypes';
 import NewProductBox from './NewProductBox';
 import { OrderTypesData } from '../../domain/constants/orderTypesData';
 import { dimensions, weightUnits } from '../../domain/constants/units';
@@ -10,10 +9,14 @@ import FareBox from '../hocs/FareBox/FareBox';
 import { Query } from '../../data/ApiQueries/Query';
 import { HttpMethods } from '../../domain/constants/httpMethods';
 import { apiRoutes } from '../../data/routes/apiRoutes';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { UserData } from '../../domain/interfaces/UserData';
+import { setUserAddresses } from '../../redux/slice/addressSlice';
+import { addProductInfo, clearOrderDetails, saveBuyerDetails, saveShippingDetails } from '../../redux/slice/orderDetailsSlice';
+import { clearUserInfo } from '../../redux/slice/userDataSlice';
 
 import "./styles/addOrders.css";
+import { calculateFare } from '../../data/helpers/CalculateFare';
 
 type IAddOrders = {
     isOpen: boolean;
@@ -26,29 +29,43 @@ const CustomInputs = React.lazy(() => import("../hocs/InputFileds/CustomInputs")
 const AddOrders: React.FC<IAddOrders> = ({ isOpen, onCancel }) => {
     const { Text } = Typography;
     const { token } = theme.useToken();
+    const [form] = Form.useForm()
+    const dispatch = useDispatch();
     const user = useSelector((state: { userDetails: { currentUser: UserData } }) => state.userDetails.currentUser);
+    const userAddresses = useSelector((state: { address: { addresses: [] } }) => state.address.addresses);
+    const orderDetails: any = useSelector((state: { orderDetails: { details: [] } }) => state.orderDetails.details);
 
+    const selectedUnit = orderDetails[0]?.shippingDetails?.unit;
     const [isModalOpen, setIsModalOpen] = useState<boolean>(isOpen);
     const [isBtnEnable, setIsBtnEnable] = useState<boolean>(false);
     const [current, setCurrent] = useState(0);
     const [orderType, setOrderType] = useState<string>(OrderTypesData.Commercial);
-    const [unit, setUnit] = useState<string | undefined>("");
-    console.log("🚀 ~ unit:", unit)
-    const [addresses, setAddresses] = useState<[]>([]);
-    const [selectedAddress, setSelectedAddress] = useState();
-    const [isWareHouse, setIsWareHouse] = useState<boolean>(false);
+    const [unit, setUnit] = useState<{[key: string]: string}>({
+        totalWeight: "g",
+        length: "cm",
+        breadth: "cm",
+        height: "cm"
+    });
+    const [selectedAddress, setSelectedAddress] = useState(orderDetails.pickUpAddressId);
+    const [isWareHouse, setIsWareHouse] = useState<boolean>(orderDetails.isWareHouse);
     const [products, setProducts] = useState<any>([]);
-    const [calculateData, setCalculateData] = useState({
+    const [fare, setFare] = useState<number>(0);
+    const [calculateData, setCalculateData] = useState<{ [key: string]: number }>({
         totalWeight: 0,
         length: 0,
         breadth: 0,
         height: 0
     });
     const { totalWeight, length, breadth, height } = calculateData;
+    
+    const deadWeight = orderDetails[0]?.shippingDetails?.calculateData?.totalWeight+" "+orderDetails[0]?.shippingDetails?.unit?.totalWeight;
+    const dimensionalFactor = selectedUnit === "inch" ? 139 : 5000;
+    const volumetricWeight = (length*breadth*height)/dimensionalFactor+" "+orderDetails[0]?.shippingDetails?.unit?.totalWeight;
+    const billedWeight = Math.max((length*breadth*height)/dimensionalFactor, orderDetails[0]?.shippingDetails?.calculateData?.totalWeight)+" "+orderDetails[0]?.shippingDetails?.unit?.totalWeight;
 
     // Check if all values are greater than 0
     const isShippingDetails = totalWeight > 0 && length > 0 && breadth > 0 && height > 0;
-
+  
     const [userDetails, setUserDetails] = useState<{ [key: string]: string }>({
         fullName: "",
         email: "",
@@ -58,43 +75,65 @@ const AddOrders: React.FC<IAddOrders> = ({ isOpen, onCancel }) => {
         pinCode: "",
         city: "",
         state: "",
-        country: "",
+        country: ""
     })
+
+    // Making the L,B and H units same
+    const handleUnits = (value: string, ele: string) => {
+        if(ele === "totalWeight"){
+            setUnit({...unit, totalWeight: value})
+        } else if(ele === "length" || ele === "breadth" ||  ele === "height") {
+            setUnit({...unit, length: value, breadth: value, height: value})
+        }
+    }
+
+    useEffect(() => {
+        if (!unit || unit.totalWeight === weightUnits[0]) {
+            setFare(calculateFare(totalWeight * 0.001))
+          } else if (unit.totalWeight === weightUnits[1]) {
+            setFare(calculateFare(totalWeight));
+          }
+    }, [])
+
+    console.log("fare", fare)
+     
+    // Fetching Pickup Address
     const fetchAddresses = async () => {
         await Query(HttpMethods.GET, apiRoutes.GET_ADDRESSES, {}, user?.token).then((res) => {
             if (res.status === 200) {
                 const add = res?.data?.addresses.map((item: any) => {
                     return {
                         label: item.COMPLETE_ADDRESS + ", " + item.CITY + ", " + item.STATE + ", " + item.COUNTRY + ", " + item.PIN_CODE,
-                        value: item.COMPLETE_ADDRESS + ", " + item.CITY + ", " + item.STATE + ", " + item.COUNTRY + ", " + item.PIN_CODE
+                        value: item.USER_ADDRESS_ID
                     }
                 })
-
-                setAddresses(add)
+                dispatch(setUserAddresses(add));
             }
         })
-    }
+    } 
 
+    // Calling FetchAddress
     useEffect(() => {
-        fetchAddresses();
+        if (userAddresses.length === 0) {
+            fetchAddresses();
+        }
     }, [])
 
+    // Pre Filled Data
+    useEffect(() => {
+        form.setFieldsValue({
+            fullName: orderDetails.fullName,
+            email: orderDetails.email,
+            phone: orderDetails.phone,
+            alternatePhone: orderDetails.alternatePhone,
+            completeAddress: orderDetails.completeAddress,
+            pinCode: orderDetails.pinCode,
+            city: orderDetails.city,
+            state: orderDetails.state,
+            country: orderDetails.country
+        });
+    }, [form]);
 
-    const addProduct = () => {
-        setProducts([...products, { id: products.length, orderType: 'someOrderType' }]); // Add a new product with a unique id and an orderType
-    };
-
-    const deleteProduct = (id: string) => {
-        setProducts(products.filter((product: { id: string; }) => product.id !== id));
-    };
-
-    const onFinish: FormProps<IndexPageFormType>['onFinish'] = (value) => {
-        console.log("🚀 ~ value:", value)
-    };
-
-    const onFinishFailed: FormProps<IndexPageFormType>['onFinishFailed'] = (errorInfo) => {
-        console.log('Failed:', errorInfo);
-    };
 
     const descpItems: DescriptionsProps['items'] = [
         {
@@ -123,31 +162,15 @@ const AddOrders: React.FC<IAddOrders> = ({ isOpen, onCancel }) => {
             children: <p>No. 18, Wantang Road, Xihu District, Hangzhou, Zhejiang, China</p>,
         },
     ];
+    
 
-    const handleFormData = (e: any) => {
-        switch (e.placeholder) {
-            case "Total Weight":
-                setCalculateData({ ...calculateData, totalWeight: parseFloat(e.value) });
-                break;
-            case "Length":
-                setCalculateData({ ...calculateData, length: parseFloat(e.value) })
-                break;
-            case "Breadth":
-                setCalculateData({ ...calculateData, breadth: parseFloat(e.value) })
-                break;
-            case "Height":
-                setCalculateData({ ...calculateData, height: parseFloat(e.value) })
-                break;
-        }
-    }
-
-
+    // Checking all the required fields in Buyer's Address form
     useEffect(() => {
         const { alternatePhone, ...requiredDetails } = userDetails;
-    
         const values = Object.values(requiredDetails);
         const filledValues = values.filter(ele => ele.trim().length > 0);
-        setIsBtnEnable(filledValues.length === values.length)
+        setIsBtnEnable(filledValues.length === values.length);
+
     }, [userDetails])
 
     // Buyer Details Function
@@ -162,35 +185,34 @@ const AddOrders: React.FC<IAddOrders> = ({ isOpen, onCancel }) => {
                     optionFilterProp="label"
                     onChange={(value) => setSelectedAddress(value)}
                     value={selectedAddress}
-                    options={addresses}
+                    options={userAddresses}
                 />
-                <Checkbox onChange={(e) => setIsWareHouse(e.target.checked)}>Ship to our warehouse</Checkbox>
+                <Checkbox checked={isWareHouse ?? orderDetails.isWareHouse} onChange={(e) => setIsWareHouse(e.target.checked)}>Ship to our warehouse</Checkbox>
                 <fieldset className="add-orders-fieldset">
                     <legend>Buyer's Address</legend>
                     <Form
+                        form={form}
                         name="basic"
-                        initialValues={{ remember: true }}
-                        // onFinishFailed={onFinishFailed}
+                        initialValues={{ userDetails }}
                         autoComplete="off"
                         layout="vertical"
                     >
                         {
                             Object.keys(userDetails).map((ele, index: number) => {
                                 const placeholder = ele.split(/(?=[A-Z])/).join(" ").toLocaleUpperCase();
-                                const required = placeholder === "ALTERNATE PHONE" ? false : true;
+                                const required = (placeholder === "ALTERNATE PHONE") || (placeholder === "EMAIL") ? false : true;
                                 const type = placeholder === "EMAIL" ? "email" : (placeholder === "PHONE") || (placeholder === "ALTERNATE PHONE") || (placeholder === "PIN CODE") ? "number" : "text"
                                 return (
-                                    <Suspense fallback=""><CustomInputs placeholder={placeholder}
-                                    type={type}
-                                    key={index}
-                                    name={ele}
-                                    disabled={isWareHouse && true}
-                                    rules={[{ required: required, message: `Please enter ${placeholder.toLowerCase()} !` }]}
-                                    addonUnit={() => { }}
-                                    label
-                                    onChange={(e: any) => setUserDetails({ ...userDetails, [ele]: e.value })}
-                                    value={userDetails[ele]} />
-                                </Suspense>
+                                    <Suspense fallback="" key={index}><CustomInputs placeholder={placeholder}
+                                        type={type}
+                                        name={ele}
+                                        disabled={isWareHouse && true}
+                                        rules={[{ required: required, message: `Please enter ${placeholder.toLowerCase()} !` }]}
+                                        addonUnit={() => { }}
+                                        label
+                                        onChange={(e: any) => setUserDetails({ ...userDetails, [ele]: e.value })}
+                                        value={userDetails[ele]} />
+                                    </Suspense>
                                 )
                             })
                         }
@@ -202,41 +224,65 @@ const AddOrders: React.FC<IAddOrders> = ({ isOpen, onCancel }) => {
 
     // Add Products Function
     const addProducts = () => {
+        const addProduct = () => {
+            setProducts([...products, { id: products.length, productName: '' }]);
+        };
+    
+        const updateProductInfo = (index: number, newInfo: any) => {
+            const updatedProducts = [...products];
+            updatedProducts[index] = { ...updatedProducts[index], ...newInfo };
+            setProducts(updatedProducts);
+        };
+    
+        const deleteProduct = (id: number) => {
+            setProducts(products.filter((product: { id: number }) => product.id !== id));
+        };
         return (
             <Flex className="add-orders-flex" vertical>
-                <Text> <b> Product Details: </b> <Text type="secondary">List each of your products individually for shipping or storage. For example, if you have a shirt in various
-                    sizes and colors, add each variation as a separate product. This means you should list <b> "Shirt - Black, Small," "Shirt - Black,
-                        Medium," "Shirt - Red, Large," and "Shirt - Black, Large" </b> as different products. </Text></Text>
-                <Flex align="center" style={{ margin: "1.5cqmax 0cqmax 1.5cqmax 0cqmax" }}>
-                    <Text><b> Order Type: </b> </Text>
-                    <Radio.Group onChange={(e: RadioChangeEvent) => setOrderType(e.target.value)} value={orderType} style={{ marginLeft: "1cqmax" }}>
-                        <Radio
-                            value={OrderTypesData.Commercial}
-                            checked={orderType === OrderTypesData.Commercial}
-                            onChange={() => setOrderType(OrderTypesData.Commercial)}
-                        >
-                            Commercial
-                        </Radio>
-                        <Radio
-                            value={OrderTypesData.NonCommercial}
-                            checked={orderType === OrderTypesData.NonCommercial}
-                            onChange={() => setOrderType(OrderTypesData.NonCommercial)}
-                        >
-                            Non-Commercial
-                        </Radio>
-                    </Radio.Group>
-                </Flex>
-
-                {/* Add New Products */}
-                {products.map((product: { id: string; orderType: string; }) => (
-                    <NewProductBox key={product.id} orderType={orderType} onDelete={() => deleteProduct(product.id)} />
-                ))}
-                <Flex>
-                    <Suspense fallback="">
-                        <CustomButton type="primary" text="+Add" size="middle" onClick={addProduct} />
-                    </Suspense>
-                </Flex>
+            <Text>
+                <b>Product Details:</b> 
+                <Text type="secondary">
+                    List each of your products individually for shipping or storage. For example, if you have a shirt in various
+                    sizes and colors, add each variation as a separate product. This means you should list 
+                    <b> "Shirt - Black, Small," "Shirt - Black, Medium," "Shirt - Red, Large," and "Shirt - Black, Large"</b> 
+                    as different products.
+                </Text>
+            </Text>
+            <Flex align="center" style={{ margin: "1.5cqmax 0cqmax 1.5cqmax 0cqmax" }}>
+                <Text><b>Order Type:</b></Text>
+                <Radio.Group onChange={(e: RadioChangeEvent) => setOrderType(e.target.value)} value={orderType} style={{ marginLeft: "1cqmax" }}>
+                    <Radio
+                        value={OrderTypesData.Commercial}
+                        checked={orderType === OrderTypesData.Commercial}
+                        onChange={() => setOrderType(OrderTypesData.Commercial)}
+                    >
+                        Commercial
+                    </Radio>
+                    <Radio
+                        value={OrderTypesData.NonCommercial}
+                        checked={orderType === OrderTypesData.NonCommercial}
+                        onChange={() => setOrderType(OrderTypesData.NonCommercial)}
+                    >
+                        Non-Commercial
+                    </Radio>
+                </Radio.Group>
             </Flex>
+
+            {/* Add New Products */}
+            {products?.map((product: { id: any }, index: number) => (
+                <NewProductBox 
+                    key={product.id} 
+                    orderType={orderType} 
+                    onDelete={() => deleteProduct(product.id)} 
+                    productsInfo={(newInfo) => updateProductInfo(index, newInfo)} 
+                />
+            ))}
+            <Flex>
+                <Suspense fallback="">
+                    <CustomButton type="primary" text="+Add" size="middle" onClick={addProduct} />
+                </Suspense>
+            </Flex>
+        </Flex>
         )
     }
 
@@ -250,44 +296,25 @@ const AddOrders: React.FC<IAddOrders> = ({ isOpen, onCancel }) => {
                 <Form
                     name="basic"
                     initialValues={{ remember: true }}
-                    onFinish={onFinish}
-                    onFinishFailed={onFinishFailed}
                     autoComplete="off"
                     className="add-shipping-form"
                 >
-                    {/* Weight Field */}
-                    <Suspense fallback=""><CustomInputs placeholder="Total Weight"
-                        type="number"
-                        name="totalWeight"
-                        addonAfter={weightUnits}
-                        rules={[{ required: true, message: 'Please enter total weight !' }]}
-                        addonUnit={(value: string) => setUnit(value)}
-                        onChange={(e: EventTarget) => handleFormData(e)}
-                        value={calculateData.totalWeight} /></Suspense>
-
-                    {/* Length Field */}
-                    <Suspense fallback=""><CustomInputs placeholder="Length" type="number"
-                        name="length"
-                        addonAfter={dimensions}
-                        addonUnit={(value: string) => setUnit(value)}
-                        rules={[{ required: true, message: 'Please enter length !' }]}
-                        onChange={(e: EventTarget) => handleFormData(e)} value={calculateData.length} /></Suspense>
-
-                    {/* Breadth Filed */}
-                    <Suspense fallback=""><CustomInputs placeholder="Breadth" type="number"
-                        addonAfter={dimensions}
-                        name="breadth"
-                        rules={[{ required: true, message: 'Please enter breadth !' }]}
-                        addonUnit={(value: string) => setUnit(value)}
-                        onChange={(e: EventTarget) => handleFormData(e)} value={calculateData.breadth} /></Suspense>
-
-                    {/* Height Field */}
-                    <Suspense fallback=""><CustomInputs placeholder="Height" type="number"
-                        addonAfter={dimensions}
-                        name="height"
-                        rules={[{ required: true, message: 'Please enter height !' }]}
-                        addonUnit={(value: string) => setUnit(value)}
-                        onChange={(e: EventTarget) => handleFormData(e)} value={calculateData.height} /></Suspense>
+                    {
+                        Object.keys(calculateData).map((ele, index: number) => {
+                            const placeholder = ele.split(/(?=[A-Z])/).join(" ").toLocaleUpperCase();
+                            const dimUnits = (placeholder.includes("WEIGHT") ? weightUnits : dimensions);
+                            return (
+                                <Suspense fallback=""  key={index}><CustomInputs placeholder={placeholder}
+                                    type="number"
+                                    name={ele}
+                                    addonAfter={dimUnits}
+                                    rules={[{ required: true, message: `Please enter ${placeholder} !` }]}
+                                    addonUnit={(value: string) => handleUnits(value, ele)}
+                                    onChange={(e: any) => setCalculateData({ ...calculateData, [ele]: parseFloat(e.value)})}
+                                    value={calculateData[ele]} /></Suspense>
+                            )
+                        })
+                    }
                 </Form>
             </Flex>
         )
@@ -303,10 +330,10 @@ const AddOrders: React.FC<IAddOrders> = ({ isOpen, onCancel }) => {
                 <Card title="Total Fare">
                     <Flex align="center" justify="center" vertical>
                         <Flex justify="space-around">
-                            <FareBox weight="15.00 KG" type="Dead Weight" />
-                            <FareBox weight="4.34 KG" type="Volumetric Weight" />
+                            <FareBox weight={deadWeight} type="Dead Weight" />
+                            <FareBox weight={volumetricWeight} type="Volumetric Weight" />
                         </Flex>
-                        <FareBox weight="4.34 KG" type="Billed Weight" dark />
+                        <FareBox weight={billedWeight} type="Billed Weight" dark />
                     </Flex>
                     <Divider />
                     <Flex align="center" justify="space-between">
@@ -375,8 +402,46 @@ const AddOrders: React.FC<IAddOrders> = ({ isOpen, onCancel }) => {
 
     const handleCancel = () => {
         setIsModalOpen(!isOpen);
-        onCancel(!isOpen)
+        onCancel(!isOpen);
+        dispatch(clearUserInfo());
+        dispatch(clearOrderDetails());
     };
+
+    const handleSaveAndNextBtn = () => {
+        if (current === 0) {
+            const buyerAddress = {
+                ...userDetails,
+                pickUpAddressId: selectedAddress,
+                isWareHouse
+            }
+            dispatch(saveBuyerDetails(buyerAddress))
+        }
+        else if(current === 1){
+            
+            const productInfo = {
+                orderType,
+                products
+            }
+            dispatch(addProductInfo(productInfo))
+        } else if(current === 2) {
+                const shippingDetails: any = {
+                    calculateData,
+                    unit
+                };
+            dispatch(saveShippingDetails(shippingDetails));
+        }
+        setCurrent(current + 1)
+    }
+
+    const handlePreviousBtn = () => {
+        setCurrent(current - 1);
+    }
+
+    useEffect(() => {
+        // if(isWareHouse ? isWareHouse : orderDetails.isWareHouse) {
+        //     dispatch(clearOrderDetails())
+        // }
+    },[isWareHouse])
 
     return (
         <Modal title="Add Orders" footer={null} open={isModalOpen} onOk={handleOk} onCancel={handleCancel} width={1500} className="add-order-modal">
@@ -387,17 +452,17 @@ const AddOrders: React.FC<IAddOrders> = ({ isOpen, onCancel }) => {
 
 
                 {current > 0 && (
-                    <Suspense fallback=""><CustomButton style={{ margin: '0 1cqmax' }} type="default" text="Previous" size="middle" onClick={() => setCurrent(current - 1)} /></Suspense>
+                    <Suspense fallback=""><CustomButton style={{ margin: '0 1cqmax' }} type="default" text="Previous" size="middle" onClick={handlePreviousBtn} /></Suspense>
                 )}
                 {current === steps.length - 1 && (
                     <Suspense fallback=""><CustomButton type="primary" text="Done" size="middle" onClick={() => message.success('Processing complete!')} /></Suspense>
                 )}
                 {current < steps.length - 1 && (
-                    <Suspense fallback=""><CustomButton type="primary"  disabled={
-                        !(isWareHouse || isBtnEnable) || 
-                        (products.length === 0 && current === 1) || 
+                    <Suspense fallback=""><CustomButton type="primary" disabled={
+                        !(isWareHouse || isBtnEnable) ||
+                        (products.length === 0 && current === 1) ||
                         (!isShippingDetails && current === 2)
-                      }  text="Save & Next" size="middle" onClick={() => setCurrent(current + 1)} /></Suspense>
+                    } text="Save & Next" size="middle" onClick={handleSaveAndNextBtn} /></Suspense>
                 )}
             </div>
         </Modal>

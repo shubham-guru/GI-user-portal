@@ -12,14 +12,7 @@
 }
 .ant-input-group-addon{
     border-radius: .1cqmax !important;
-    background-color: #000000 !important;
+    background-color: #dbdbdb !important;
     padding: 0 15px !important;
     border: none !important;
-}
-.ant-select-selection-item{
-    color: #ffffff !important;
-    text-align: center !important;
-}
-.ant-select-arrow{
-    color: #ffffff !important;
 }

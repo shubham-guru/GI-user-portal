@@ -4,13 +4,18 @@ import Sider from 'antd/es/layout/Sider';
 import logo from "../../../assets/SB.png";
 import { useNavigate } from 'react-router-dom';
 import { routes } from '../../../domain/constants/routes';
+import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { clearAddresses } from '../../../redux/slice/addressSlice';
+import { clearUserInfo } from '../../../redux/slice/userDataSlice';
+import { clearOrderDetails } from '../../../redux/slice/orderDetailsSlice';
 
 import "./sidebar.css"
-import { useEffect, useState } from 'react';
 
 const SideBar = () => {
 
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const [selectedKey, setSelectedKey] = useState<number>(0);
     const url = window.location.href;
 
@@ -25,7 +30,14 @@ const SideBar = () => {
   }, [url, selectedKey]);
 
     const handleMenuClick = (e: { key: string }) => {
-        navigate(e.key)
+        if(e.key !== routes.LOGOUT){
+            navigate(e.key)
+        } else {
+            dispatch(clearAddresses());
+            dispatch(clearUserInfo());
+            dispatch(clearOrderDetails());
+            navigate(routes.LOGIN)
+        }
     };
 
     return (
