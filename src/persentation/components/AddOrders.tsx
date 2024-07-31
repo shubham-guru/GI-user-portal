@@ -12,11 +12,10 @@ import { apiRoutes } from '../../data/routes/apiRoutes';
 import { useDispatch, useSelector } from 'react-redux';
 import { UserData } from '../../domain/interfaces/UserData';
 import { setUserAddresses } from '../../redux/slice/addressSlice';
-import { addProductInfo, clearOrderDetails, saveBuyerDetails, saveShippingDetails } from '../../redux/slice/orderDetailsSlice';
-import { clearUserInfo } from '../../redux/slice/userDataSlice';
+import { addProductInfo, clearOrderDetails, saveBuyerDetails, saveOrderFareInfo, saveShippingDetails } from '../../redux/slice/orderDetailsSlice';
+import { calculateFare } from '../../data/helpers/CalculateFare';
 
 import "./styles/addOrders.css";
-import { calculateFare } from '../../data/helpers/CalculateFare';
 
 type IAddOrders = {
     isOpen: boolean;
@@ -87,16 +86,24 @@ const AddOrders: React.FC<IAddOrders> = ({ isOpen, onCancel }) => {
         }
     }
 
+    // Calculating Fare
     useEffect(() => {
-        if (!unit || unit.totalWeight === weightUnits[0]) {
+        if (unit.totalWeight === weightUnits[0]) {
             setFare(calculateFare(totalWeight * 0.001))
           } else if (unit.totalWeight === weightUnits[1]) {
             setFare(calculateFare(totalWeight));
           }
-    }, [])
+    }, [current])
 
-    console.log("fare", fare)
-     
+     const taxFare = (18/100)*fare;
+     const totalFare = taxFare+fare;
+    
+     const fareInfo = {
+        totalFare: totalFare,
+        deadWeight: deadWeight,
+        volumetricWeight: volumetricWeight,
+        paymentStatus: "Pending" 
+     }
     // Fetching Pickup Address
     const fetchAddresses = async () => {
         await Query(HttpMethods.GET, apiRoutes.GET_ADDRESSES, {}, user?.token).then((res) => {
@@ -138,12 +145,12 @@ const AddOrders: React.FC<IAddOrders> = ({ isOpen, onCancel }) => {
     const descpItems: DescriptionsProps['items'] = [
         {
             key: '1',
-            label: 'UserName',
+            label: 'Pick up Address',
             children: <p>Zhou Maomao</p>,
         },
         {
             key: '2',
-            label: 'Telephone',
+            label: 'Ship to Warehouse',
             children: <p>1810000000</p>,
         },
         {
@@ -163,6 +170,10 @@ const AddOrders: React.FC<IAddOrders> = ({ isOpen, onCancel }) => {
         },
     ];
     
+    const handlePayLater = () => {
+        dispatch(saveOrderFareInfo(fareInfo));
+        handleCancel();
+    }
 
     // Checking all the required fields in Buyer's Address form
     useEffect(() => {
@@ -325,7 +336,7 @@ const AddOrders: React.FC<IAddOrders> = ({ isOpen, onCancel }) => {
         return (
             <Flex className="add-orders-flex">
                 <Card title="Preview Order">
-                    <Descriptions items={descpItems} />
+                    <Descriptions title="Buyer Details"  items={descpItems} />
                 </Card>
                 <Card title="Total Fare">
                     <Flex align="center" justify="center" vertical>
@@ -341,13 +352,13 @@ const AddOrders: React.FC<IAddOrders> = ({ isOpen, onCancel }) => {
                             <Radio value={1} checked><Text className="shipping-text-pri">Guru Internationals</Text></Radio>
                             <Tag color='green'>Lightest</Tag>
                         </Flex>
-                        <Text className="shipping-text-sec">$2334</Text>
+                        <Text className="shipping-text-sec">&#x20b9; {fare.toFixed(1)}/-</Text>
                     </Flex>
                     <Flex align="center" justify="space-between">
                         <Text className="shipping-text-pri">Sub Total
                             <Text type="secondary"> +18% GST</Text>
                         </Text>
-                        <Text className="shipping-text-sec">$2675.5</Text>
+                        <Text className="shipping-text-sec">&#x20b9; {totalFare.toFixed(1)}/-</Text>
                     </Flex>
                     <Text type="secondary">
                         <Divider />
@@ -356,7 +367,7 @@ const AddOrders: React.FC<IAddOrders> = ({ isOpen, onCancel }) => {
                         products to the respective customer.
                     </Text>
                     <Flex align="center" justify="space-around">
-                        <CustomButton text="Save & Pay Later" size="middle" type="default" onClick={() => { }} />
+                        <CustomButton text="Save & Pay Later" size="middle" type="default" onClick={handlePayLater} />
                         <CustomButton text="Pay Now" size="middle" type="primary" onClick={() => { }} />
                     </Flex>
                 </Card>
@@ -403,7 +414,6 @@ const AddOrders: React.FC<IAddOrders> = ({ isOpen, onCancel }) => {
     const handleCancel = () => {
         setIsModalOpen(!isOpen);
         onCancel(!isOpen);
-        dispatch(clearUserInfo());
         dispatch(clearOrderDetails());
     };
 
@@ -432,16 +442,9 @@ const AddOrders: React.FC<IAddOrders> = ({ isOpen, onCancel }) => {
         }
         setCurrent(current + 1)
     }
-
     const handlePreviousBtn = () => {
         setCurrent(current - 1);
     }
-
-    useEffect(() => {
-        // if(isWareHouse ? isWareHouse : orderDetails.isWareHouse) {
-        //     dispatch(clearOrderDetails())
-        // }
-    },[isWareHouse])
 
     return (
         <Modal title="Add Orders" footer={null} open={isModalOpen} onOk={handleOk} onCancel={handleCancel} width={1500} className="add-order-modal">
