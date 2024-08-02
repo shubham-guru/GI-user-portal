@@ -1,10 +1,13 @@
 import React, { ReactNode, Suspense, useEffect, useState } from 'react'
-import { Flex, Image, Layout, theme, Typography } from 'antd'
+import { Col, Flex, Image, Layout, theme, Typography } from 'antd'
 import { useNavigate } from 'react-router-dom';
 import logo from "../../assets/GI_LOGO_BLACK.png";
 import { routes } from '../../domain/constants/routes';
 import { Content } from 'antd/es/layout/layout';
 import { PlusCircleOutlined } from '@ant-design/icons';
+
+import { useSelector } from 'react-redux';
+import { UserData } from '../../domain/interfaces/UserData';
 
 import "./styles/mainLayoutPage.css";
 
@@ -24,6 +27,9 @@ const MainLayoutPage: React.FC<IMainLayoutPage> = ({ children }) => {
     const { Text } = Typography;
     const [href, setHref] = useState<string>("");
     const [showModal, setShowModal] = useState<boolean>(false);
+    const user = useSelector((state: { userDetails: { currentUser: UserData } }) => state.userDetails.currentUser);
+    const userName = user?.firstName + " " + user?.lastName; // Getting User name
+
 
     // If Agreement page then logo will navigate to index page else dashboard
     useEffect(() => {
@@ -39,7 +45,7 @@ const MainLayoutPage: React.FC<IMainLayoutPage> = ({ children }) => {
     } = theme.useToken();
 
     return (
-        <Layout style={{height: "100vh", overflowY: "hidden"}}>
+        <Layout style={{ height: "100vh", overflowY: "hidden" }}>
             {
                 !url.includes(routes.AGREEMENT) ? <Suspense fallback=""><SideBar /></Suspense> : null
             }
@@ -60,10 +66,13 @@ const MainLayoutPage: React.FC<IMainLayoutPage> = ({ children }) => {
                         borderRadius: borderRadiusLG,
                     }}
                 >
+                    <Col span={24} style={{ marginBottom: "1cqmax" }}>
+                        Namaste, <Text style={{ fontSize: "1.2cqmax" }}>{userName?.toLocaleUpperCase()}</Text>
+                    </Col>
                     {children}
 
                     {
-                        showModal ? <Suspense fallback=""><AddOrders isOpen={showModal} onCancel={(value: boolean) => setShowModal(value)} /> </Suspense>: null
+                        showModal ? <Suspense fallback=""><AddOrders isOpen={showModal} onCancel={(value: boolean) => setShowModal(value)} /> </Suspense> : null
                     }
                 </Content>
             </Layout>

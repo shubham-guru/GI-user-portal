@@ -1,11 +1,28 @@
-.order-box-col{
-    background-color: #181818;
-    color: #eee;
-    padding: 2cqmax;
-    border-radius: .2cqmax;
+.order-box-card {
+    background: rgba( 255, 255, 255, 0.25 );
+    box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+    backdrop-filter: blur( 4px );
+    -webkit-backdrop-filter: blur( 4px );
+    border-radius: 10px;
+    padding: 1cqmax;
+    border: 1px solid rgba(37, 37, 37, 0.18);
     cursor: pointer;
 }
-.order-box-text{
-    font-size: 2cqmax;
-    color: #eee;
+.order-box-card:hover{
+    transition: .2s ease-in-out;
+    box-shadow: 1px 5px 20px 0 rgba(141, 146, 228, 0.37);
+}
+.order-box-div{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: .4cqmax;
+}
+.order-box-value {
+    font-size: 1cqmax;
+    color: #1a1a1a;
+    font-weight: 400;
+}
+.order-box-key {
+    color: #616161;
+    font-weight: 300;
 }

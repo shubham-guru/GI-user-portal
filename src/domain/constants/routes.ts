@@ -3,7 +3,7 @@ export const routes = {
     LOGIN: "/login",
     SIGNUP: "/sign-up",
     AGREEMENT: "/agreement",
-    DASHBOARD: "/dashboard",  //later append a unique id here
+    DASHBOARD: "/dashboard",
     ORDERS: "/orders",
     ORDERS_ID: "/orders/:orderId",
     INVENTORY: "/inventory",

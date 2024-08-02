@@ -9,6 +9,7 @@ import { useDispatch } from 'react-redux';
 import { clearAddresses } from '../../../redux/slice/addressSlice';
 import { clearUserInfo } from '../../../redux/slice/userDataSlice';
 import { clearOrderDetails } from '../../../redux/slice/orderDetailsSlice';
+import { clearUserOrders } from '../../../redux/slice/userOrders';
 
 import "./sidebar.css"
 
@@ -17,7 +18,7 @@ const SideBar = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [selectedKey, setSelectedKey] = useState<number>(0);
-    const url = window.location.href;
+    const url = window.location.pathname;
 
     useEffect(() => {
         if(url.includes(routes.DASHBOARD)) setSelectedKey(0)
@@ -36,6 +37,7 @@ const SideBar = () => {
             dispatch(clearAddresses());
             dispatch(clearUserInfo());
             dispatch(clearOrderDetails());
+            dispatch(clearUserOrders());
             navigate(routes.LOGIN)
         }
     };
@@ -48,7 +50,7 @@ const SideBar = () => {
                 <Divider />
                 <Menu
                     mode="inline"
-                    defaultSelectedKeys={[SideBarData[selectedKey].key]}
+                    defaultSelectedKeys={[url]}
                     items={SideBarData}
                     onClick={handleMenuClick}
                 />

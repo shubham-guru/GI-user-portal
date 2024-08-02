@@ -14,13 +14,18 @@ import { UserData } from '../../domain/interfaces/UserData';
 import { setUserAddresses } from '../../redux/slice/addressSlice';
 import { addProductInfo, clearOrderDetails, saveBuyerDetails, saveOrderFareInfo, saveShippingDetails } from '../../redux/slice/orderDetailsSlice';
 import { calculateFare } from '../../data/helpers/CalculateFare';
+import { Alert } from '../hocs/Alert/Alert';
 
 import "./styles/addOrders.css";
+import { clearUserOrders } from '../../redux/slice/userOrders';
 
 type IAddOrders = {
     isOpen: boolean;
     onCancel: (value: boolean) => void;
 }
+interface CustomTitleProps {
+    text: string;
+  }
 
 const CustomButton = React.lazy(() => import("../hocs/Button/CustomButton"));
 const CustomInputs = React.lazy(() => import("../hocs/InputFileds/CustomInputs"));
@@ -35,6 +40,7 @@ const AddOrders: React.FC<IAddOrders> = ({ isOpen, onCancel }) => {
     const orderDetails: any = useSelector((state: { orderDetails: { details: [] } }) => state.orderDetails.details);
 
     const selectedUnit = orderDetails[0]?.shippingDetails?.unit;
+    let params: {};
     const [isModalOpen, setIsModalOpen] = useState<boolean>(isOpen);
     const [isBtnEnable, setIsBtnEnable] = useState<boolean>(false);
     const [current, setCurrent] = useState(0);
@@ -47,6 +53,7 @@ const AddOrders: React.FC<IAddOrders> = ({ isOpen, onCancel }) => {
     });
     const [selectedAddress, setSelectedAddress] = useState(orderDetails.pickUpAddressId);
     const [isWareHouse, setIsWareHouse] = useState<boolean>(orderDetails.isWareHouse);
+    const [loading, setLoading] = useState<boolean>(false);
     const [products, setProducts] = useState<any>([]);
     const [fare, setFare] = useState<number>(0);
     const [calculateData, setCalculateData] = useState<{ [key: string]: number }>({
@@ -104,6 +111,7 @@ const AddOrders: React.FC<IAddOrders> = ({ isOpen, onCancel }) => {
         volumetricWeight: volumetricWeight,
         paymentStatus: "Pending" 
      }
+
     // Fetching Pickup Address
     const fetchAddresses = async () => {
         await Query(HttpMethods.GET, apiRoutes.GET_ADDRESSES, {}, user?.token).then((res) => {
@@ -117,7 +125,7 @@ const AddOrders: React.FC<IAddOrders> = ({ isOpen, onCancel }) => {
                 dispatch(setUserAddresses(add));
             }
         })
-    } 
+    }
 
     // Calling FetchAddress
     useEffect(() => {
@@ -140,7 +148,6 @@ const AddOrders: React.FC<IAddOrders> = ({ isOpen, onCancel }) => {
             country: orderDetails.country
         });
     }, [form]);
-
 
     const descpItems: DescriptionsProps['items'] = [
         {
@@ -170,9 +177,49 @@ const AddOrders: React.FC<IAddOrders> = ({ isOpen, onCancel }) => {
         },
     ];
     
-    const handlePayLater = () => {
-        dispatch(saveOrderFareInfo(fareInfo));
-        handleCancel();
+    const handlePayLater = async () => {
+        setLoading(true);
+            params = {
+                // Buyyers Address
+                fullName: orderDetails[0]?.buyerDetails?.fullName,
+                email: orderDetails[0]?.buyerDetails?.email,
+                phone: orderDetails[0]?.buyerDetails?.phone,
+                alternatePhone: orderDetails[0]?.buyerDetails?.alternatePhone,
+                completeAddress: orderDetails[0]?.buyerDetails?.completeAddress,
+                pinCode: orderDetails[0]?.buyerDetails?.pinCode,
+                city: orderDetails[0]?.buyerDetails?.city,
+                state: orderDetails[0]?.buyerDetails?.state,
+                country: orderDetails[0]?.buyerDetails?.country,
+                isWarehouse: orderDetails[0]?.buyerDetails?.isWareHouse ? orderDetails[0]?.buyerDetails?.isWareHouse : false,
+                // Product Info
+                products: products,
+                // Order Info
+                pickUpAddressId: JSON.stringify(orderDetails[0]?.buyerDetails?.pickUpAddressId),
+                orderType: orderDetails[0]?.productInfo?.orderType,
+                totalFare: JSON.stringify(totalFare),
+                isPaid: false,
+                paymentId: "",
+                // Shipping Info
+                weight: JSON.stringify(orderDetails[0]?.shippingDetails?.calculateData?.totalWeight),
+                length: JSON.stringify(orderDetails[0]?.shippingDetails?.calculateData?.length),
+                breadth: JSON.stringify(orderDetails[0]?.shippingDetails?.calculateData?.breadth),
+                height: JSON.stringify(orderDetails[0]?.shippingDetails?.calculateData?.height),
+                weightUnit: orderDetails[0]?.shippingDetails?.unit?.totalWeight,
+                sidesUnit: orderDetails[0]?.shippingDetails?.unit?.length
+            }
+
+        await Query(HttpMethods.POST, apiRoutes.CREATE_ORDER, params, user?.token).then((res) => {
+            if(res?.status === 200) {
+                setLoading(false);
+                Alert("success", res?.data?.message);
+                dispatch(saveOrderFareInfo(fareInfo));
+                dispatch(clearUserOrders());
+                handleCancel();
+            } else {
+                setLoading(false);
+                Alert("error", res?.data?.message);
+            }
+        })
     }
 
     // Checking all the required fields in Buyer's Address form
@@ -181,7 +228,6 @@ const AddOrders: React.FC<IAddOrders> = ({ isOpen, onCancel }) => {
         const values = Object.values(requiredDetails);
         const filledValues = values.filter(ele => ele.trim().length > 0);
         setIsBtnEnable(filledValues.length === values.length);
-
     }, [userDetails])
 
     // Buyer Details Function
@@ -331,14 +377,20 @@ const AddOrders: React.FC<IAddOrders> = ({ isOpen, onCancel }) => {
         )
     }
 
+    const CustomTitle: React.FC<CustomTitleProps> = ({ text }) => (
+        <Text style={{ fontSize: "2cqmax", fontWeight: 400 }}>
+          {text}
+        </Text>
+      );
+      
     // Preview & Pay
     const previewPay = () => {
         return (
-            <Flex className="add-orders-flex">
-                <Card title="Preview Order">
-                    <Descriptions title="Buyer Details"  items={descpItems} />
+            <Flex className="add-orders-flex" gap={30}>
+                <Card title={<CustomTitle text="Preview Order" />}>
+                    <Descriptions title="Buyer Details" items={descpItems} />
                 </Card>
-                <Card title="Total Fare">
+                <Card title={<CustomTitle text="Total Fare" />} style={{ fontSize: "4cqmax", fontWeight: 400 }}>
                     <Flex align="center" justify="center" vertical>
                         <Flex justify="space-around">
                             <FareBox weight={deadWeight} type="Dead Weight" />
@@ -367,7 +419,7 @@ const AddOrders: React.FC<IAddOrders> = ({ isOpen, onCancel }) => {
                         products to the respective customer.
                     </Text>
                     <Flex align="center" justify="space-around">
-                        <CustomButton text="Save & Pay Later" size="middle" type="default" onClick={handlePayLater} />
+                        <CustomButton text="Save & Pay Later" size="middle" loading={loading} type="default" onClick={handlePayLater} />
                         <CustomButton text="Pay Now" size="middle" type="primary" onClick={() => { }} />
                     </Flex>
                 </Card>
@@ -442,6 +494,7 @@ const AddOrders: React.FC<IAddOrders> = ({ isOpen, onCancel }) => {
         }
         setCurrent(current + 1)
     }
+
     const handlePreviousBtn = () => {
         setCurrent(current - 1);
     }

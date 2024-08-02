@@ -82,11 +82,13 @@ const Dashboard = () => {
       isDefault: defaultAdd
     }
     await Query(HttpMethods.POST, apiRoutes.SAVE_ADDRESS, body, user?.token).then((res) => {
-      const addressId = res?.data?.address[0][0].USER_ADDRESS_ID;
-      Alert("success", res?.data?.message);
-      dispatch(updateAddress(addressId))
-    }).catch((err) => {
-      console.log("🚀 ~ awaitQuery ~ err:", err)
+      if(res?.status === 200){
+        const addressId = res?.data?.address[0][0].USER_ADDRESS_ID;
+        Alert("success", res?.data?.message);
+        dispatch(updateAddress(addressId))
+      } else {
+        Alert("error", res?.data?.message);
+      }
     })
   }
   return (

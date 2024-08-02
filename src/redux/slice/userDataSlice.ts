@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { UserData } from '../../domain/interfaces/UserData';
 
-const initialInfo: UserData = {
+const initialState: UserData = {
   email: '',
   firstName: '',
   lastName: '',
@@ -18,14 +18,14 @@ const initialInfo: UserData = {
 const userSlice = createSlice({
   name: 'userDetails',
   initialState: {
-    currentUser: initialInfo
+    currentUser: initialState
   },
   reducers: {
     saveUserData: (state, action:PayloadAction<UserData>) => {      
       state.currentUser = action.payload;
     },
     clearUserInfo: (state) => {
-      state.currentUser = initialInfo;
+      state.currentUser = initialState;
     },
     updateAddress: (state, action: PayloadAction<string>) => {
       state.currentUser.address = action.payload;
