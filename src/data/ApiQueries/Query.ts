@@ -34,7 +34,6 @@ export const Query = async (method: string, endpoint: string, body?: {}, token?:
         Authorization: token ? `Bearer ${token}` : null
       },
     };
-
     // Conditionally add the body for POST methods
     if (method === HttpMethods.POST) {
       config.data = body;
@@ -42,6 +41,12 @@ export const Query = async (method: string, endpoint: string, body?: {}, token?:
 
     // Conditionally add the body as query parameters for PUT requests
     if ((method === HttpMethods.PUT) && body) {
+      const params = new URLSearchParams(body).toString();
+      config.url += `?${params}`;
+    }
+
+    // Conditionally add the body as query parameters for GET requests
+    if ((method === HttpMethods.GET) && body) {
       const params = new URLSearchParams(body).toString();
       config.url += `?${params}`;
     }

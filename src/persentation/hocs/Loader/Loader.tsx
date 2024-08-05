@@ -4,7 +4,7 @@ import { Col, Typography } from 'antd';
 const { Text } = Typography;
 
 type ILoader = {
-    text: string;
+    text?: string;
 }
 
 const Loader: React.FC<ILoader> = ({ text }) => {

@@ -3,7 +3,6 @@ import { Checkbox, Col, Flex, Form, Row, Typography } from 'antd'
 
 import CustomButton from '../hocs/Button/CustomButton';
 
-import "./styles/dashboard.css";
 import axios from 'axios';
 import { Alert } from '../hocs/Alert/Alert';
 import CustomInputs from '../hocs/InputFileds/CustomInputs';
@@ -15,6 +14,7 @@ import { UserData } from '../../domain/interfaces/UserData';
 import DashboardBanner from './DashboardBanner';
 import { updateAddress } from '../../redux/slice/userDataSlice';
 
+import "./styles/dashboard.css";
 
 const Dashboard = () => {
   const { Text } = Typography;

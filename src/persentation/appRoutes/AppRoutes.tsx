@@ -3,6 +3,7 @@ import Login from '../components/Login';
 import SignUp from '../components/SignUp';
 import { Routes, Route } from 'react-router-dom'
 import { routes } from '../../domain/constants/routes';
+import Loader from '../hocs/Loader/Loader';
 
 const AppRoutes= () => {
 
@@ -23,19 +24,19 @@ const AppRoutes= () => {
 
   return (
     <Routes>
-      <Route path={routes.INDEX} element={<Suspense fallback=""><Index /></Suspense>} />
-      <Route path={routes.LOGIN} element={<Suspense fallback=""><AuthLayoutPage children={<Login />} /></Suspense>} />
-      <Route path={routes.SIGNUP} element={<Suspense fallback=""><AuthLayoutPage children={<SignUp />} /></Suspense>} />
-      <Route path={routes.DASHBOARD} element={<Suspense fallback=""><MainLayoutPage children={<Dashboard />} /></Suspense>} />
-      <Route path={routes.AGREEMENT} element={<Suspense fallback=""><MainLayoutPage children={<Agreement />} /></Suspense>} />
-      <Route path={routes.ORDERS} element={<Suspense fallback=""><MainLayoutPage children={<Orders />} /></Suspense>} />
-      <Route path={routes.ORDERS_ID} element={<Suspense fallback=""><MainLayoutPage children={<OrderDetails />} /></Suspense>} />
-      <Route path={routes.INVENTORY} element={<Suspense fallback=""><MainLayoutPage children={<Inventory />} /></Suspense>} />
-      <Route path={routes.KYC} element={<Suspense fallback=""><MainLayoutPage children={<Kyc />} /></Suspense>} />
-      <Route path={routes.RATECALCULATOR} element={<Suspense fallback=""><MainLayoutPage children={<RateCalculator />} /></Suspense>} />
-      <Route path={routes.PAYMENTS} element={<Suspense fallback=""><MainLayoutPage children={<Payments />} /></Suspense>} />
-      <Route path={routes.HEAVYCARGO} element={<Suspense fallback=""><MainLayoutPage children={<HeavyCargo />} /></Suspense>} />
-      <Route path={routes.NOPAGE} element={<Suspense fallback=""><NoPage /></Suspense>} />
+      <Route path={routes.INDEX} element={<Suspense fallback={<Loader />}><Index /></Suspense>} />
+      <Route path={routes.LOGIN} element={<Suspense fallback={<Loader />}><AuthLayoutPage children={<Login />} /></Suspense>} />
+      <Route path={routes.SIGNUP} element={<Suspense fallback={<Loader />}><AuthLayoutPage children={<SignUp />} /></Suspense>} />
+      <Route path={routes.DASHBOARD} element={<Suspense fallback={<Loader />}><MainLayoutPage children={<Dashboard />} /></Suspense>} />
+      <Route path={routes.AGREEMENT} element={<Suspense fallback={<Loader />}><MainLayoutPage children={<Agreement />} /></Suspense>} />
+      <Route path={routes.ORDERS} element={<Suspense fallback={<Loader />}><MainLayoutPage children={<Orders />} /></Suspense>} />
+      <Route path={routes.ORDERS_ID} element={<Suspense fallback={<Loader />}><MainLayoutPage children={<OrderDetails />} /></Suspense>} />
+      <Route path={routes.INVENTORY} element={<Suspense fallback={<Loader />}><MainLayoutPage children={<Inventory />} /></Suspense>} />
+      <Route path={routes.KYC} element={<Suspense fallback={<Loader />}><MainLayoutPage children={<Kyc />} /></Suspense>} />
+      <Route path={routes.RATECALCULATOR} element={<Suspense fallback={<Loader />}><MainLayoutPage children={<RateCalculator />} /></Suspense>} />
+      <Route path={routes.PAYMENTS} element={<Suspense fallback={<Loader />}><MainLayoutPage children={<Payments />} /></Suspense>} />
+      <Route path={routes.HEAVYCARGO} element={<Suspense fallback={<Loader />}><MainLayoutPage children={<HeavyCargo />} /></Suspense>} />
+      <Route path={routes.NOPAGE} element={<Suspense fallback={<Loader />}><NoPage /></Suspense>} />
     </Routes>
   )
 }

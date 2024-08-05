@@ -228,7 +228,7 @@ const AddOrders: React.FC<IAddOrders> = ({ isOpen, onCancel }) => {
         const values = Object.values(requiredDetails);
         const filledValues = values.filter(ele => ele.trim().length > 0);
         setIsBtnEnable(filledValues.length === values.length);
-    }, [userDetails])
+    }, [userDetails]);
 
     // Buyer Details Function
     const buyerDetails = () => {

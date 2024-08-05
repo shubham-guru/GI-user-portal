@@ -1,5 +1,6 @@
 import React from 'react'
 import { Card, Typography } from 'antd';
+import { useNavigate } from 'react-router-dom';
 
 import "./orderBox.css"
 
@@ -13,6 +14,7 @@ const OrderBox: React.FC<IOrderBox> = ({ orderId, orderType, paymentStatus, crea
   const { Text } = Typography;
   const payment = paymentStatus == "1" ? "Paid" : "Pending";
   const date = new Date(createdOn);
+  const navigate = useNavigate();
 
   const dateOptions: Intl.DateTimeFormatOptions = {
     year: 'numeric',
@@ -32,7 +34,7 @@ const OrderBox: React.FC<IOrderBox> = ({ orderId, orderType, paymentStatus, crea
   const readableTime = date.toLocaleTimeString('en-US', timeOptions);
 
   return (
-    <Card title={`Order Id: ${orderId}`} className="order-box-card" bordered={false}>
+    <Card title={`Order Id: ${orderId}`} className="order-box-card" bordered={false} onClick={() => navigate(orderId)}>
       <div className="order-box-div">
         <Text className="order-box-key">Order Type:</Text>
         <Text className="order-box-value"> {orderType} </Text>
