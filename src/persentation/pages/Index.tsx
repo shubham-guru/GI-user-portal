@@ -23,7 +23,7 @@ const CustomModal = React.lazy(() => import("../hocs/Modal/CustomModal"));
 const Loader = React.lazy(() => import("../hocs/Loader/Loader"));
 
 const Index = () => {
-  const { Text } = Typography;
+  const { Text, Link } = Typography;
   const navigate = useNavigate();
   const targetFareRef = useRef<HTMLDivElement>(null);
   const targetContactRef = useRef<HTMLDivElement>(null);
@@ -358,7 +358,12 @@ const Index = () => {
         }
       </Col>
       <Divider className="footer-divider" />
-      <Text id="copyright-text">&#169;	Guru Internationals</Text>
+      <Col span={24}>
+        <Flex justify="space-around">
+          <Text id="copyright-text">&#169;	Guru Internationals</Text>
+          <Link id="copyright-text" onClick={() => navigate(routes.PRIVACY_POLICY)}>Privacy Policy</Link>
+        </Flex>
+      </Col>
     </Row>
   )
 }

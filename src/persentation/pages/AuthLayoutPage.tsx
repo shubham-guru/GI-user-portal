@@ -71,7 +71,7 @@ const AuthLayoutPage: React.FC<IAuthLayoutPage> = ({ children }) => {
                 firstName: info.given_name,
                 lastName: info.family_name,
                 image: info.picture,
-                verifiedEmail: info.verified_email,
+                verifiedEmail: info.verified_email
               }
               const registerBody = {
                 fullName: data.firstName+ " " +data.lastName,

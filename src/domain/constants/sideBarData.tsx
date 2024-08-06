@@ -27,8 +27,8 @@ const SideBarData = [
         icon: <HomeOutlined />,
     },
     {
-        key: routes.KYC,
-        label: "KYC",
+        key: routes.ACCOUNT_DETAILS,
+        label: "Account Details",
         icon: <KeyOutlined />,
     },
     {

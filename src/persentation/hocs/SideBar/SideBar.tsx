@@ -24,7 +24,7 @@ const SideBar = () => {
         if(url.includes(routes.DASHBOARD)) setSelectedKey(0)
         if(url.includes(routes.ORDERS)) setSelectedKey(1)
         if(url.includes(routes.INVENTORY)) setSelectedKey(2)
-        if(url.includes(routes.KYC)) setSelectedKey(3)
+        if(url.includes(routes.ACCOUNT_DETAILS)) setSelectedKey(3)
         if(url.includes(routes.RATECALCULATOR)) setSelectedKey(4)
         if(url.includes(routes.HEAVYCARGO)) setSelectedKey(5)
         if(url.includes(routes.PAYMENTS)) setSelectedKey(6)
