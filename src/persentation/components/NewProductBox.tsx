@@ -82,7 +82,7 @@ const NewProductBox: React.FC<INewProductsBox> = ({ orderType, onDelete, product
                                         name={ele}
                                         rules={[{ required: required, message: `Please enter ${placeholder} !` }]}
                                         addonUnit={() => { }}
-                                        label
+                                        label={placeholder}
                                         onChange={(e: any) => setProductDetails({ ...productDetails, [ele]: e.value })}
                                         value={productDetails[ele]}
                                     />

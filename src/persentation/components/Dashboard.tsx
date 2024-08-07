@@ -122,7 +122,7 @@ const Dashboard = () => {
                           readonly={isReadOnly}
                           rules={[{ required: true, message: `Please enter ${placeholder.toLowerCase()} !` }]}
                           addonUnit={() => { }}
-                          label
+                          label={placeholder}
                           onChange={(e: any) => handleAddress(e, ele)}
                           value={addressDetails[ele]} /></Suspense>
                       )
