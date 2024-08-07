@@ -9,5 +9,9 @@ export interface UserData {
     token?: string;
     address?: string;
     isAgreement?: boolean;
-    products?: Array<{}>
+    products?: Array<{}>,
+    companyKyc?: boolean,
+    individualKyc?: boolean,
+    createdAt?: string,
+    userId?: string,
 }

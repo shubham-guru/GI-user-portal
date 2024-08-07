@@ -12,7 +12,11 @@ const initialState: UserData = {
   address: '',
   isAgreement: false,
   token: '',
-  products: []
+  products: [],
+  companyKyc: false,
+  individualKyc: false,
+  createdAt: "",
+  userId: "",
 }
 
 const userSlice = createSlice({
@@ -33,9 +37,19 @@ const userSlice = createSlice({
     updateProducts: (state, action: PayloadAction<[{}]>) => {
       state.currentUser.products = action.payload;
     },
+    updateUserInfo: (state, action: PayloadAction<any>) => {
+      state.currentUser.companyKyc = action.payload.COMPANY_KYC;
+      state.currentUser.individualKyc = action.payload.INDIVIDUAL_KYC;
+      state.currentUser.createdAt = action.payload.CREATED_AT;
+      state.currentUser.userId = action.payload.USER_ID;
+      state.currentUser.email = action.payload.EMAIL_ID;
+      if(action.payload.REGISTERED_FROM === "manual"){
+        state.currentUser.verifiedEmail = false;
+      }
+    },
   },
 });
 
-export const { saveUserData, updateAddress, clearUserInfo, updateProducts } = userSlice.actions;
+export const { saveUserData, updateAddress, clearUserInfo, updateProducts, updateUserInfo } = userSlice.actions;
 
 export default userSlice.reducer;

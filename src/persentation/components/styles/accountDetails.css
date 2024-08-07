@@ -1,0 +1,43 @@
+.account-details-row{
+    padding: 2cqmax;
+}
+.account-details-col{
+    display: flex;
+    align-items: center;
+}
+.acc-det-text{
+    font-size: 2.2cqmax;
+    text-transform: capitalize;
+    color: #333;
+    font-weight: 400;
+    line-height: 2.5cqmax;
+}
+.acc-det-email{
+    font-size: 1.2cqmax !important;
+    text-transform: lowercase;
+    font-weight: 300;
+    margin-right: .6cqmax ;
+}
+.acc-det-userid{
+    font-size: 1.2cqmax !important;
+    font-weight: 500;
+}
+.acc-det-onboarded-text{
+    font-size: 2.5cqmax;
+}
+#user-addresses-text{
+    color: #444;
+    margin-bottom: 1cqmax;
+    font-weight: 400 !important;
+}
+.acc-det-card{
+    margin-bottom: 1.5cqmax;
+}
+.acc-det-kyc-flex{
+    margin-top: 2cqmax;
+}
+.inner-flex{
+    border: solid .2px #e2e2e2;
+    padding: 3cqmax;
+    border-radius: 1cqmax;
+}

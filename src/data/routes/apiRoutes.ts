@@ -3,6 +3,7 @@ export const apiRoutes = {
     LOGIN: "/login",
     CREATE_ORDER: "/add-order-details",
     GET_ORDERS: "/get-orders",
+    GET_USER_INFO: "/get-userInfo",
     GET_SELECTED_ORDER: "/get-selected-order",
     SAVE_ADDRESS: "/user-address",
     GET_SELECTED_ADDRESS: "/get-selected-address",

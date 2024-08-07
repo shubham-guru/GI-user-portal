@@ -10,7 +10,14 @@ const CustomButton = React.lazy(() => import("../hocs/Button/CustomButton"));
 
 const Navbar = () => {
 
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+
+  const scrollToBottom = () => {
+    window.scrollTo({
+        top: document.documentElement.scrollHeight,
+        behavior: 'smooth'
+    });
+};
 
   return (
     <Row className="navbar-row">
@@ -21,8 +28,8 @@ const Navbar = () => {
         <Col xs={0} md={8} lg={6}>
             <Flex justify="space-evenly" align="center">
                 <Suspense fallback=""><CustomButton type="primary" size="middle" text="Login" onClick={() => navigate(routes.LOGIN)}/></Suspense>
-                <Suspense fallback=""><CustomButton type="default" size="middle" text="Let's Talk" onClick={() => navigate(routes.SIGNUP)}/></Suspense>
-            </Flex>
+                <Suspense fallback=""><CustomButton type="default" size="middle" text="Let's Talk"
+                onClick={scrollToBottom} /></Suspense></Flex>
         </Col>
     </Row>
   )

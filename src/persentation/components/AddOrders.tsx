@@ -18,6 +18,7 @@ import { Alert } from '../hocs/Alert/Alert';
 
 import "./styles/addOrders.css";
 import { clearUserOrders } from '../../redux/slice/userOrders';
+import { fetchAddresses } from '../../data/helpers/getAddresses';
 
 type IAddOrders = {
     isOpen: boolean;
@@ -113,26 +114,22 @@ const AddOrders: React.FC<IAddOrders> = ({ isOpen, onCancel }) => {
      }
 
     // Fetching Pickup Address
-    const fetchAddresses = async () => {
-        await Query(HttpMethods.GET, apiRoutes.GET_ADDRESSES, {}, user?.token).then((res) => {
-            if (res.status === 200) {
-                const add = res?.data?.addresses.map((item: any) => {
-                    return {
-                        label: item.COMPLETE_ADDRESS + ", " + item.CITY + ", " + item.STATE + ", " + item.COUNTRY + ", " + item.PIN_CODE,
-                        value: item.USER_ADDRESS_ID
-                    }
-                })
-                dispatch(setUserAddresses(add));
-            }
-        })
-    }
+    
 
     // Calling FetchAddress
     useEffect(() => {
-        if (userAddresses.length === 0) {
-            fetchAddresses();
+        if (userAddresses?.length === 0) {
+            getAddresses();
         }
     }, [])
+
+
+    const getAddresses = async () => {
+        const addresses = await fetchAddresses(user?.token);
+        if(addresses) {
+            dispatch(setUserAddresses(addresses));
+        }
+    };
 
     // Pre Filled Data
     useEffect(() => {
@@ -266,7 +263,7 @@ const AddOrders: React.FC<IAddOrders> = ({ isOpen, onCancel }) => {
                                         disabled={isWareHouse && true}
                                         rules={[{ required: required, message: `Please enter ${placeholder.toLowerCase()} !` }]}
                                         addonUnit={() => { }}
-                                        label
+                                        label={placeholder}
                                         onChange={(e: any) => setUserDetails({ ...userDetails, [ele]: e.value })}
                                         value={userDetails[ele]} />
                                     </Suspense>

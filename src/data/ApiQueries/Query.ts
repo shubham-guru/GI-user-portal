@@ -21,7 +21,6 @@ export const ThirdPartyQuery = async (method: string, url: string, token?: strin
   }
 };
 
-
 export const Query = async (method: string, endpoint: string, body?: {}, token?: string) => {
   try {
     const config: any = {
@@ -31,22 +30,23 @@ export const Query = async (method: string, endpoint: string, body?: {}, token?:
         Accept: "application/json",
         "x-api-key": APIKEY,
         "auth-token": AUTHTOKEN,
-        Authorization: token ? `Bearer ${token}` : null
+        Authorization: token ? `Bearer ${token}` : undefined,
       },
     };
+
     // Conditionally add the body for POST methods
-    if (method === HttpMethods.POST) {
+    if (method === HttpMethods.POST && body) {
       config.data = body;
     }
 
-    // Conditionally add the body as query parameters for PUT requests
-    if ((method === HttpMethods.PUT) && body) {
+    // Conditionally add the body as query parameters for PUT methods if body exists
+    if (method === HttpMethods.PUT && body) {
       const params = new URLSearchParams(body).toString();
       config.url += `?${params}`;
     }
 
-    // Conditionally add the body as query parameters for GET requests
-    if ((method === HttpMethods.GET) && body) {
+    // Conditionally add the body as query parameters for GET methods if body exists
+    if (method === HttpMethods.GET && body && Object.keys(body).length > 0) {
       const params = new URLSearchParams(body).toString();
       config.url += `?${params}`;
     }
